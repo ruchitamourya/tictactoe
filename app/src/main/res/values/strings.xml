@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Tic Tac Toe</string>
+    <dimen name="text_size">50sp</dimen>
+</resources>

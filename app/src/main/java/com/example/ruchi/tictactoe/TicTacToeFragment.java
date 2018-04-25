@@ -2,18 +2,24 @@ package com.example.ruchi.tictactoe;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class TicTacToeFragment extends Fragment implements View.OnClickListener {
 
@@ -40,6 +46,7 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
     private int count = 0;
     private boolean hasGameFinished = false;
     int ttt[][] = new int[3][3];
+    private static Random random = new Random(System.currentTimeMillis());
 
 
     public static TicTacToeFragment newInstance() {
@@ -74,7 +81,6 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
         restart = view.findViewById(R.id.btn_restart);
         cardView_btn = view.findViewById(R.id.card_v_btn);
 
-
         text1.setOnClickListener(this);
         text2.setOnClickListener(this);
         text3.setOnClickListener(this);
@@ -100,6 +106,11 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onClick(View v) {
 
+        if (hasGameFinished) {
+            return;
+        }
+        final MediaPlayer mp = MediaPlayer.create(getContext(),R.raw.sound1);
+        mp.start();
         v.setOnClickListener(null);
         if (isPlayer1Active) {
             player2.setBackgroundColor(Color.GREEN);
@@ -110,501 +121,136 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
         }
         int id = v.getId();
 
+        int row = -1;
+        int col = -1;
         switch (id) {
             case R.id.text1:
-                if (isPlayer1Active) {
-                    turnOfPlayer1(text1);
-                    ttt[0][0] = 1;
-                    boolean hasWon = hasThisPlayerWon(0,0);
-//                    String t1 = text1.getText().toString();
-//                    String t2 = text2.getText().toString();
-//                    String t3 = text3.getText().toString();
-//                    String t4 = text4.getText().toString();
-//                    String t5 = text5.getText().toString();
-//                    String t7 = text7.getText().toString();
-//                    String t9 = text9.getText().toString();
-//
-//                    if ((t1.equals(t2) && t1.equals(t3))) {
-//                        text1.setBackgroundColor(Color.GREEN);
-//                        text2.setBackgroundColor(Color.GREEN);
-//                        text3.setBackgroundColor(Color.GREEN);
-//                        winningPlayer(player1);
-//
-//                    } else if ((t1.equals(t4) && t1.equals(t7))) {
-//                        text1.setBackgroundColor(Color.GREEN);
-//                        text4.setBackgroundColor(Color.GREEN);
-//                        text7.setBackgroundColor(Color.GREEN);
-//                        winningPlayer(player1);
-//                    } else if ((t1.equals(t5) && t1.equals(t9))) {
-//                        text1.setBackgroundColor(Color.GREEN);
-//                        text5.setBackgroundColor(Color.GREEN);
-//                        text9.setBackgroundColor(Color.GREEN);
-//                        winningPlayer(player1);
-//                    }
-
-                    isPlayer1Active = false;
-                } else {
-                    turnOfPlayer2(text1);
-                    ttt[0][0] = 2;
-                    String t1 = text1.getText().toString();
-                    String t2 = text2.getText().toString();
-                    String t3 = text3.getText().toString();
-                    String t4 = text4.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t1.equals(t2) && t1.equals(t3))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text2.setBackgroundColor(Color.GREEN);
-                        text3.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t1.equals(t4) && t1.equals(t7))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text4.setBackgroundColor(Color.GREEN);
-                        text7.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t1.equals(t5) && t1.equals(t9))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    }
-
-                    isPlayer1Active = true;
-                }
+                row = 0;
+                col = 0;
                 break;
             case R.id.text2:
-
-                if (isPlayer1Active) {
-                    turnOfPlayer1(text2);
-                    String t1 = text1.getText().toString();
-                    String t2 = text2.getText().toString();
-                    String t3 = text3.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t8 = text8.getText().toString();
-                    if ((t2.equals(t1) && t2.equals(t3))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text2.setBackgroundColor(Color.GREEN);
-                        text3.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t2.equals(t5) && t2.equals(t8))) {
-                        text2.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text8.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    }
-
-                    isPlayer1Active = false;
-                } else {
-                    turnOfPlayer2(text2);
-                    String t1 = text1.getText().toString();
-                    String t2 = text2.getText().toString();
-                    String t3 = text3.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t8 = text8.getText().toString();
-                    if ((t2.equals(t1) && t2.equals(t3))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text2.setBackgroundColor(Color.GREEN);
-                        text3.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t2.equals(t5) && t2.equals(t8))) {
-                        text2.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text8.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    }
-
-                    isPlayer1Active = true;
-                }
+                row = 0;
+                col = 1;
                 break;
             case R.id.text3:
-                if (isPlayer1Active) {
-                    turnOfPlayer1(text3);
-                    String t1 = text1.getText().toString();
-                    String t2 = text2.getText().toString();
-                    String t3 = text3.getText().toString();
-                    String t6 = text6.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t3.equals(t2) && t3.equals(t1))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text2.setBackgroundColor(Color.GREEN);
-                        text3.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t3.equals(t6) && t3.equals(t9))) {
-                        text3.setBackgroundColor(Color.GREEN);
-                        text6.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t3.equals(t5) && t3.equals(t7))) {
-                        text3.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text7.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    }
-
-                    isPlayer1Active = false;
-                } else {
-                    turnOfPlayer2(text3);
-                    String t1 = text1.getText().toString();
-                    String t2 = text2.getText().toString();
-                    String t3 = text3.getText().toString();
-                    String t6 = text6.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t3.equals(t2) && t3.equals(t1))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text2.setBackgroundColor(Color.GREEN);
-                        text3.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t3.equals(t6) && t3.equals(t9))) {
-                        text3.setBackgroundColor(Color.GREEN);
-                        text6.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t3.equals(t5) && t3.equals(t7))) {
-                        text3.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text7.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    }
-                    isPlayer1Active = true;
-                }
+                row = 0;
+                col = 2;
                 break;
             case R.id.text4:
-
-                if (isPlayer1Active) {
-                    turnOfPlayer1(text4);
-                    String t1 = text1.getText().toString();
-                    String t4 = text4.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t6 = text6.getText().toString();
-
-                    if ((t4.equals(t1) && t4.equals(t7))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text4.setBackgroundColor(Color.GREEN);
-                        text7.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t4.equals(t5) && t4.equals(t6))) {
-                        text4.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text6.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    }
-                    isPlayer1Active = false;
-                } else {
-                    turnOfPlayer2(text4);
-                    String t1 = text1.getText().toString();
-                    String t4 = text4.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t6 = text6.getText().toString();
-
-                    if ((t4.equals(t1) && t4.equals(t7))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text4.setBackgroundColor(Color.GREEN);
-                        text7.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t4.equals(t5) && t4.equals(t6))) {
-                        text4.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text6.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    }
-                    isPlayer1Active = true;
-                }
+                row = 1;
+                col = 0;
                 break;
             case R.id.text5:
-                if (isPlayer1Active) {
-                    turnOfPlayer1(text5);
-                    String t1 = text1.getText().toString();
-                    String t2 = text2.getText().toString();
-                    String t3 = text3.getText().toString();
-                    String t4 = text4.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t6 = text6.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t8 = text8.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t5.equals(t2) && t5.equals(t8))) {
-                        text2.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text8.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t5.equals(t4) && t5.equals(t6))) {
-                        text4.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text6.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t5.equals(t1) && t5.equals(t9))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t5.equals(t3) && t5.equals(t7))) {
-                        text3.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text7.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    }
-                    isPlayer1Active = false;
-                } else {
-                    turnOfPlayer2(text5);
-                    String t1 = text1.getText().toString();
-                    String t2 = text2.getText().toString();
-                    String t3 = text3.getText().toString();
-                    String t4 = text4.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t6 = text6.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t8 = text8.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t5.equals(t2) && t5.equals(t8))) {
-                        text2.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text8.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t5.equals(t4) && t5.equals(t6))) {
-                        text4.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text6.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t5.equals(t1) && t5.equals(t9))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t5.equals(t3) && t5.equals(t7))) {
-                        text3.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text7.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    }
-                    isPlayer1Active = true;
-                }
+                row = 1;
+                col = 1;
                 break;
             case R.id.text6:
-                if (isPlayer1Active) {
-                    turnOfPlayer1(text6);
-                    String t3 = text3.getText().toString();
-                    String t4 = text4.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t6 = text6.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t6.equals(t3) && t6.equals(t9))) {
-                        text3.setBackgroundColor(Color.GREEN);
-                        text6.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t6.equals(t5) && t6.equals(t4))) {
-                        text4.setBackgroundColor(Color.GREEN);
-                        text6.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    }
-                    isPlayer1Active = false;
-                } else {
-                    turnOfPlayer2(text6);
-                    String t3 = text3.getText().toString();
-                    String t4 = text4.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t6 = text6.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t6.equals(t3) && t6.equals(t9))) {
-                        text3.setBackgroundColor(Color.GREEN);
-                        text6.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t6.equals(t5) && t6.equals(t4))) {
-                        text4.setBackgroundColor(Color.GREEN);
-                        text6.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    }
-                    isPlayer1Active = true;
-                }
+                row = 1;
+                col = 2;
                 break;
             case R.id.text7:
-                if (isPlayer1Active) {
-                    turnOfPlayer1(text7);
-                    String t1 = text1.getText().toString();
-                    String t8 = text8.getText().toString();
-                    String t3 = text3.getText().toString();
-                    String t4 = text4.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t7.equals(t1) && t7.equals(t4))) {
-                        text4.setBackgroundColor(Color.GREEN);
-                        text1.setBackgroundColor(Color.GREEN);
-                        text7.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t7.equals(t8) && t7.equals(t9))) {
-                        text7.setBackgroundColor(Color.GREEN);
-                        text8.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t7.equals(t5) && t7.equals(t3))) {
-                        text7.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text3.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    }
-                    isPlayer1Active = false;
-                } else {
-                    turnOfPlayer2(text7);
-                    String t1 = text1.getText().toString();
-                    String t8 = text8.getText().toString();
-                    String t3 = text3.getText().toString();
-                    String t4 = text4.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t7.equals(t1) && t7.equals(t4))) {
-                        text4.setBackgroundColor(Color.GREEN);
-                        text1.setBackgroundColor(Color.GREEN);
-                        text7.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t7.equals(t8) && t7.equals(t9))) {
-                        text7.setBackgroundColor(Color.GREEN);
-                        text8.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t7.equals(t5) && t7.equals(t3))) {
-                        text7.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text3.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    }
-                    isPlayer1Active = true;
-                }
+                row = 2;
+                col = 0;
                 break;
             case R.id.text8:
-                if (isPlayer1Active) {
-                    turnOfPlayer1(text8);
-                    String t2 = text2.getText().toString();
-                    String t8 = text8.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t8.equals(t2) && t8.equals(t5))) {
-                        text2.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text8.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t8.equals(t9) && t8.equals(t7))) {
-                        text7.setBackgroundColor(Color.GREEN);
-                        text8.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    }
-                    isPlayer1Active = false;
-                } else {
-                    turnOfPlayer2(text8);
-                    String t2 = text2.getText().toString();
-                    String t8 = text8.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t8.equals(t2) && t8.equals(t5))) {
-                        text2.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text8.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t8.equals(t9) && t8.equals(t7))) {
-                        text7.setBackgroundColor(Color.GREEN);
-                        text8.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    }
-                    isPlayer1Active = true;
-                }
+                row = 2;
+                col = 1;
                 break;
             case R.id.text9:
-                if (isPlayer1Active) {
-                    turnOfPlayer1(text9);
-                    String t1 = text1.getText().toString();
-                    String t6 = text6.getText().toString();
-                    String t3 = text3.getText().toString();
-                    String t8 = text8.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t9.equals(t6) && t9.equals(t3))) {
-                        text3.setBackgroundColor(Color.GREEN);
-                        text6.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t9.equals(t8) && t9.equals(t7))) {
-                        text7.setBackgroundColor(Color.GREEN);
-                        text8.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    } else if ((t9.equals(t5) && t9.equals(t1))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player1);
-                    }
-                    isPlayer1Active = false;
-                } else {
-                    turnOfPlayer2(text9);
-                    String t1 = text1.getText().toString();
-                    String t6 = text6.getText().toString();
-                    String t3 = text3.getText().toString();
-                    String t8 = text8.getText().toString();
-                    String t5 = text5.getText().toString();
-                    String t7 = text7.getText().toString();
-                    String t9 = text9.getText().toString();
-
-                    if ((t9.equals(t6) && t9.equals(t3))) {
-                        text3.setBackgroundColor(Color.GREEN);
-                        text6.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t9.equals(t8) && t9.equals(t7))) {
-                        text7.setBackgroundColor(Color.GREEN);
-                        text8.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    } else if ((t9.equals(t5) && t9.equals(t1))) {
-                        text1.setBackgroundColor(Color.GREEN);
-                        text5.setBackgroundColor(Color.GREEN);
-                        text9.setBackgroundColor(Color.GREEN);
-                        winningPlayer(player2);
-                    }
-                    isPlayer1Active = true;
-                }
+                row = 2;
+                col = 2;
                 break;
 
         }
-
-        count++;
-        if (count == 9) {
-            linearLayout.setVisibility(View.GONE);
-            cardView1.setVisibility(View.VISIBLE);
-            text_won.setBackgroundColor(Color.GREEN);
-            text_won.setText("it's a tie match !!!");
-            restart.setVisibility(View.VISIBLE);
-
-
+        if (isPlayer1Active) {
+            ttt[row][col] = 1;
+            turnOfPlayer1((TextView) v);
+            isPlayer1Active = false;
+        } else {
+            ttt[row][col] = 2;
+            turnOfPlayer2((TextView) v);
+            isPlayer1Active = true;
+        }
+        boolean hasWon = hasThisPlayerWon(row, col);
+        if (hasWon) {
+            hasGameFinished = true;
+            if (isPlayer1Active) {
+                winningPlayer(player2);
+            } else {
+                winningPlayer(player1);
+            }
+        } else {
+            count++;
+            if (count == 9) {
+                linearLayout.setVisibility(View.GONE);
+                cardView1.setVisibility(View.VISIBLE);
+                text_won.setBackgroundColor(Color.GREEN);
+                text_won.setText("it's a tie match !!!");
+                cardView_btn.setVisibility(View.VISIBLE);
+                restart.setVisibility(View.VISIBLE);
+                hasGameFinished = true;
+            }
         }
 
+        if (!hasGameFinished && !isPlayer1Active) {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        int delay = random.nextInt(5);
+                        Log.d("DELAY", delay + "");
+                        Thread.sleep((delay+1) * 200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    TicTacToeFragment.this.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            playAndroid();
+                        }
+                    });
+                }
+            });
+            t.start();
+        }
+
+    }
+
+    private void playAndroid() {
+        int[] anMove = getAndroidMove();
+        int index = 3 * anMove[0] + anMove[1] + 1;
+        TextView textView = text1;
+        switch (index) {
+            case 1:
+                textView = text1;
+                break;
+            case 2:
+                textView = text2;
+                break;
+            case 3:
+                textView = text3;
+                break;
+            case 4:
+                textView = text4;
+                break;
+            case 5:
+                textView = text5;
+                break;
+            case 6:
+                textView = text6;
+                break;
+            case 7:
+                textView = text7;
+                break;
+            case 8:
+                textView = text8;
+                break;
+            case 9:
+                textView = text9;
+                break;
+        }
+        this.onClick(textView);
     }
 
     private boolean hasThisPlayerWon(int row, int col) {
@@ -615,17 +261,41 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
     }
 
     private boolean checkDiagonal(int row, int col) {
+        boolean won = true;
+        if ((row == 0 && col == 0)) {
+            for (int i = 0; i<ttt[0].length; i++){
+                won = won && ttt[row][col] == ttt[i][i];
+            }
+            return won;
+           // return (ttt[row][col] == ttt[row + 1][col + 1] && ttt[row][col] == ttt[row + 2][col + 2]);
+        } else if ((row == 0 && col == 2)) {
+            return (ttt[row][col] == ttt[row + 1][col - 1] && ttt[row][col] == ttt[row + 2][col - 2]);
+        } else if (row == 1 && col == 1) {
+            return ((ttt[row][col] == ttt[row - 1][col - 1] && ttt[row][col] == ttt[row + 1][col + 1]) ||
+                    (ttt[row][col] == ttt[row - 1][col + 1] && ttt[row][col] == ttt[row + 1][col - 1]));
+        } else if ((row == 2 && col == 0)) {
+            return (ttt[row][col] == ttt[row - 1][col + 1] && ttt[row][col] == ttt[row - 2][col + 2]);
+        } else if ((row == 2 && col == 2)) {
+            return (ttt[row][col] == ttt[row - 1][col - 1] && ttt[row][col] == ttt[row - 2][col - 2]);
+        }
         return false;
     }
 
     private boolean checkColumn(int row, int col) {
-        return false;
+
+        boolean won = true;
+        for (int i = 0; i < ttt[col].length; i++) {
+            won = won && ttt[i][col] == ttt[row][col];
+        }
+        return won;
     }
 
     private boolean checkRow(int row, int col) {
-
-
-        return false;
+        boolean won = true;
+        for (int i = 0; i < ttt[row].length; i++) {
+            won = won && ttt[row][i] == ttt[row][col];
+        }
+        return won;
     }
 
     private void turnOfPlayer1(TextView textView) {
@@ -645,6 +315,7 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
         cardView1.setVisibility(View.VISIBLE);
         text_won.setBackgroundColor(Color.GREEN);
         text_won.setText(textView.getText() + " has won !!!");
+        textView.setBackgroundColor(Color.GREEN);
         cardView_btn.setVisibility(View.VISIBLE);
         restart.setVisibility(View.VISIBLE);
     }
@@ -656,6 +327,37 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
 
+    }
+
+    private int[] getAndroidMove() {
+        List<int[]> emptyCells = new ArrayList<>();
+        int[] p1Winning = new int[]{-1, -1};
+        for (int i = 0; i < ttt.length; i++) {
+            for (int j = 0; j < ttt[0].length; j++) {
+                if (ttt[i][j] == 0) {
+                    emptyCells.add(new int[]{i, j});
+                    ttt[i][j] = 1;
+                    boolean won = hasThisPlayerWon(i, j);
+                    if (won) {
+                        p1Winning[0] = i;
+                        p1Winning[1] = j;
+                    }
+                    ttt[i][j] = 2;
+                    won = hasThisPlayerWon(i, j);
+                    if (won) {
+                        return new int[]{i, j};
+                    }
+                    ttt[i][j] = 0;
+                }
+            }
+        }
+        if (p1Winning[0] != -1) {
+            return p1Winning;
+        }
+
+        int len = emptyCells.size();
+        int cellToUse = random.nextInt(len - 1);
+        return emptyCells.get(cellToUse);
     }
 
 }

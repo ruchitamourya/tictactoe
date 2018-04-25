@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/background"
+        android:background="@drawable/g7"
         tools:context=".MainActivity">
 
         <TextView
@@ -322,7 +322,7 @@
                             android:id="@+id/pl2"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="Player2"
+                            android:text="Android"
                             android:padding="5dp"
                             android:background="@android:color/black"
                             android:textColor="@android:color/white"
@@ -354,7 +354,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="55dp"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginTop="-30dp"
+                    android:layout_marginTop="-20dp"
                     android:layout_gravity="center"
                     android:visibility="gone"
                     app:cardCornerRadius="5dp"

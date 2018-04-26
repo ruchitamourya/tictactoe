@@ -36,6 +36,8 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
     private TextView player2;
 
     private CardView cardView1;
+    private CardView cardViewp1;
+    private CardView cardViewp2;
     private CardView cardView_btn;
     private LinearLayout linearLayout;
     private TextView text_won;
@@ -76,6 +78,8 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
         player2 = view.findViewById(R.id.pl2);
 
         cardView1 = view.findViewById(R.id.card_vw2);
+        cardViewp1 = view.findViewById(R.id.card_vp1);
+        cardViewp2 = view.findViewById(R.id.card_vp2);
         linearLayout = view.findViewById(R.id.pl_ll);
         text_won = view.findViewById(R.id.pl_won);
         restart = view.findViewById(R.id.btn_restart);
@@ -93,7 +97,7 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
 
 
         player1.setBackgroundColor(Color.GREEN);
-        player1.setTextColor(Color.BLACK);
+       // player1.setTextColor(Color.BLACK);
         restart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,7 +113,7 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
         if (hasGameFinished) {
             return;
         }
-        final MediaPlayer mp = MediaPlayer.create(getContext(),R.raw.sound1);
+        final MediaPlayer mp = MediaPlayer.create(getContext(),R.raw.button_click1);
         mp.start();
         v.setOnClickListener(null);
         if (isPlayer1Active) {
@@ -185,7 +189,7 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
                 linearLayout.setVisibility(View.GONE);
                 cardView1.setVisibility(View.VISIBLE);
                 text_won.setBackgroundColor(Color.GREEN);
-                text_won.setText("it's a tie match !!!");
+                text_won.setText(R.string.tie);
                 cardView_btn.setVisibility(View.VISIBLE);
                 restart.setVisibility(View.VISIBLE);
                 hasGameFinished = true;
@@ -314,7 +318,7 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
         linearLayout.setVisibility(View.GONE);
         cardView1.setVisibility(View.VISIBLE);
         text_won.setBackgroundColor(Color.GREEN);
-        text_won.setText(textView.getText() + " has won !!!");
+        text_won.setText(textView.getText()+" has won !!!");
         textView.setBackgroundColor(Color.GREEN);
         cardView_btn.setVisibility(View.VISIBLE);
         restart.setVisibility(View.VISIBLE);

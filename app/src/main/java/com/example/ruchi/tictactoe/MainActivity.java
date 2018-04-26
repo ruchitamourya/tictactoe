@@ -17,7 +17,8 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        openTicTacToeFragment();
+        openHomeFragment();
+       // openTicTacToeFragment();
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.showOverflowMenu();
@@ -32,19 +33,20 @@ public class MainActivity extends AppCompatActivity{
         return true;
     }
 
-    private void openTicTacToeFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        TicTacToeFragment fragment = TicTacToeFragment.newInstance();
-        transaction.add(R.id.fragment_container, fragment);
-        transaction.commit();
-    }
-
     private void openAddPlayerFragment() {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         AddPlayerFragment fragment = AddPlayerFragment.newInstance();
         fragment.show(transaction, null);
+    }
+
+    private void openHomeFragment() {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        HomeFragment fragment = HomeFragment.newInstance();
+        transaction.add(R.id.fragment_container, fragment,"homeFragment");
+        transaction.addToBackStack("homeFragment");
+        transaction.commit();
     }
 
 
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity{
                 openAddPlayerFragment();
                 return true;
             case R.id.change_player:
-               openAddPlayerFragment();
+               //openHomeFragment();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

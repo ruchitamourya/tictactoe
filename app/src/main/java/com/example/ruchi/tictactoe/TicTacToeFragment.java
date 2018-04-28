@@ -1,6 +1,8 @@
 package com.example.ruchi.tictactoe;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -43,6 +45,8 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
     private TextView text_won;
     private Button restart;
     private Toolbar toolbar;
+    private String p1;
+    private String p2;
 
     private Boolean isPlayer1Active = true;
     private int count = 0;
@@ -60,6 +64,10 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
+        p1 = sharedPreferences.getString(Constants.PLAYER1,"1");
+        p2 = sharedPreferences.getString(Constants.PLAYER2,"1");
+
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -84,6 +92,9 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
         text_won = view.findViewById(R.id.pl_won);
         restart = view.findViewById(R.id.btn_restart);
         cardView_btn = view.findViewById(R.id.card_v_btn);
+
+        player1.setText(p1);
+        player2.setText(p2);
 
         text1.setOnClickListener(this);
         text2.setOnClickListener(this);
@@ -330,8 +341,7 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
         TicTacToeFragment fragment = TicTacToeFragment.newInstance();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
-
-    }
+        }
 
     private int[] getAndroidMove() {
         List<int[]> emptyCells = new ArrayList<>();

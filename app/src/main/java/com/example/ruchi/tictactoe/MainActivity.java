@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         openHomeFragment();
-       // openTicTacToeFragment();
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.showOverflowMenu();
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity{
         FragmentTransaction transaction = manager.beginTransaction();
         HomeFragment fragment = HomeFragment.newInstance();
         transaction.add(R.id.fragment_container, fragment,"homeFragment");
-        transaction.addToBackStack("homeFragment");
+       // transaction.addToBackStack("homeFragment");
         transaction.commit();
     }
 

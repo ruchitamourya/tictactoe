@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/g4">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+    <!--<include-->
+        <!--android:id="@+id/toolbar"-->
+        <!--layout="@layout/toolbar" />-->
 
     <ImageView
         android:layout_width="300dp"

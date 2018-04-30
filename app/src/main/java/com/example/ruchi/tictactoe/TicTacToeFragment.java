@@ -1,7 +1,6 @@
 package com.example.ruchi.tictactoe;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -18,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -108,7 +106,7 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
 
 
         player1.setBackgroundColor(Color.GREEN);
-       // player1.setTextColor(Color.BLACK);
+        player1.setTextColor(Color.BLACK);
         restart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -277,21 +275,16 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
 
     private boolean checkDiagonal(int row, int col) {
         boolean won = true;
-        if ((row == 0 && col == 0)) {
-            for (int i = 0; i<ttt[0].length; i++){
+        if ((row == col)) {
+            for (int i = 0; i < ttt[0].length; i++) {
                 won = won && ttt[row][col] == ttt[i][i];
             }
             return won;
-           // return (ttt[row][col] == ttt[row + 1][col + 1] && ttt[row][col] == ttt[row + 2][col + 2]);
-        } else if ((row == 0 && col == 2)) {
-            return (ttt[row][col] == ttt[row + 1][col - 1] && ttt[row][col] == ttt[row + 2][col - 2]);
-        } else if (row == 1 && col == 1) {
-            return ((ttt[row][col] == ttt[row - 1][col - 1] && ttt[row][col] == ttt[row + 1][col + 1]) ||
-                    (ttt[row][col] == ttt[row - 1][col + 1] && ttt[row][col] == ttt[row + 1][col - 1]));
-        } else if ((row == 2 && col == 0)) {
-            return (ttt[row][col] == ttt[row - 1][col + 1] && ttt[row][col] == ttt[row - 2][col + 2]);
-        } else if ((row == 2 && col == 2)) {
-            return (ttt[row][col] == ttt[row - 1][col - 1] && ttt[row][col] == ttt[row - 2][col - 2]);
+        } else if ((row+col == ttt.length-1)) {
+            for (int i = 0; i<ttt[0].length; i++){
+                won = won && ttt[row][col] == ttt[i][ttt.length-1-i];
+            }
+            return won;
         }
         return false;
     }

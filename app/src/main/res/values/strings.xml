@@ -2,7 +2,7 @@
     <string name="app_name">Tic Tac Toe</string>
     <string name="restart">restart</string>
     <string name="android">Android</string>
-    <string name="player1">Player1</string>
+    <string name="player1">You</string>
     <string name="tic_tac_toe">Tic Tac Toe</string>
     <string name="tie">it\'s a tie match !!!</string>
     <string name="has_won">has won !!!</string>

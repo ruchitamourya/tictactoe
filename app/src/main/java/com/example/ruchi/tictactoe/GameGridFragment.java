@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -39,7 +40,6 @@ public class GameGridFragment extends Fragment implements GameGridListener {
     private TextView player1;
     private TextView player2;
 
-
     private CardView cardView1;
     private CardView cardViewp1;
     private CardView cardViewp2;
@@ -47,21 +47,21 @@ public class GameGridFragment extends Fragment implements GameGridListener {
     private LinearLayout linearLayout;
     private TextView text_won;
     private Button restart;
+    private static RadioButton mR1;
+    private static RadioButton mR2;
+
+
 
     private String p1;
     private String p2;
+    private Boolean isSoundOn;
 
     private Boolean isPlayer1Active = true;
     private int count = 0;
     private boolean hasGameFinished = false;
-    int ttt[][] = new int[5][5];
-    //int ttt[][] = new int[4][4];
+    int size = 3;
+    int ttt[][] = new int[size][size];
     private static Random random = new Random(System.currentTimeMillis());
-
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private GridLayoutManager mLayoutManager;
 
 
@@ -76,11 +76,11 @@ public class GameGridFragment extends Fragment implements GameGridListener {
      * @return A new instance of fragment GameGridFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static GameGridFragment newInstance() {
+    public static GameGridFragment newInstance(int gridSize, boolean isAndroid) {
         GameGridFragment fragment = new GameGridFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, "");
-        args.putString(ARG_PARAM2, "");
+        args.putInt("GRID_SIZE", gridSize);
+        args.putBoolean("IS_ANDROID", isAndroid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -88,11 +88,6 @@ public class GameGridFragment extends Fragment implements GameGridListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-
-        }
     }
 
     @Override
@@ -112,6 +107,17 @@ public class GameGridFragment extends Fragment implements GameGridListener {
         restart = view.findViewById(R.id.btn_restart);
         cardView_btn = view.findViewById(R.id.card_v_btn);
 
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
+        p1 = sharedPreferences.getString(Constants.PLAYER1, "");
+        p2 = sharedPreferences.getString(Constants.PLAYER2, "");
+        isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNON,false);
+        player1.setText(p1);
+        if (mR1.isChecked()){
+            player2.setText("Android");
+        }else {
+            player2.setText(p2);
+        }
+
         setUpRecyclerView(view);
 
         player1.setBackgroundColor(Color.GREEN);
@@ -126,12 +132,7 @@ public class GameGridFragment extends Fragment implements GameGridListener {
     }
 
     private void setUpRecyclerView(View view) {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
-        p1 = sharedPreferences.getString(Constants.PLAYER1, "");
-        p2 = sharedPreferences.getString(Constants.PLAYER2, "");
 
-        player1.setText(p1);
-        player2.setText(p2);
         RecyclerView recyclerView = view.findViewById(R.id.recycler_View);
         mLayoutManager = new GridLayoutManager(getContext(), ttt.length);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -153,8 +154,9 @@ public class GameGridFragment extends Fragment implements GameGridListener {
     }
 
     private void makeSound() {
+        if (isSoundOn){
         final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.button_click1);
-        mp.start();
+        mp.start();}
     }
 
     private void androidTurnWithDelay() {
@@ -173,7 +175,8 @@ public class GameGridFragment extends Fragment implements GameGridListener {
                     GameGridFragment.this.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            playAndroid();
+                            if (mR1.isChecked()){
+                            playAndroid();}
                         }
                     });
                 }
@@ -333,7 +336,7 @@ public class GameGridFragment extends Fragment implements GameGridListener {
     private void onRestartBtnClick() {
         FragmentManager manager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        GameGridFragment fragment = GameGridFragment.newInstance();
+        GameGridFragment fragment = GameGridFragment.newInstance(3, true);
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
     }

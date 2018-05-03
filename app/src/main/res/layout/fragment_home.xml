@@ -27,9 +27,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Play with :"
-            android:layout_gravity="center"
+            android:layout_marginLeft="100dp"
             android:textColor="@android:color/black"
-            android:textSize="25sp" />
+            android:textSize="18sp" />
 
         <RadioGroup
             android:layout_width="wrap_content"
@@ -43,7 +43,8 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="@string/android"
-                android:textSize="25sp" />
+                android:layout_marginLeft="30dp"
+                android:textSize="20sp" />
 
             <RadioButton
                 android:id="@+id/rb_friend"
@@ -51,8 +52,52 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:text="@string/friend"
-                android:textSize="25sp" />
+                android:textSize="20sp" />
         </RadioGroup>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginLeft="100dp"
+            android:layout_marginTop="10dp"
+                android:textColor="@android:color/black"
+                android:text="Choose game :"
+                />
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+                <RadioButton
+                    android:id="@+id/rbn_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3*3"
+                    android:textSize="20sp"
+                    android:checked="true"
+                    android:textColor="@android:color/black"
+                    android:layout_marginLeft="30dp"/>
+
+                <RadioButton
+                    android:id="@+id/rbn_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4*4"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:layout_marginLeft="10dp"/>
+                <RadioButton
+                    android:id="@+id/rbn_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="5*5"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:layout_marginLeft="10dp"/>
+            </RadioGroup>
+
 
         <android.support.v7.widget.CardView
             android:id="@+id/card_v_btn_srt"

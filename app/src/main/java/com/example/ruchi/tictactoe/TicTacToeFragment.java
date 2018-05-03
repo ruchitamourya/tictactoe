@@ -62,9 +62,9 @@ public class TicTacToeFragment extends Fragment implements View.OnClickListener 
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
-        p1 = sharedPreferences.getString(Constants.PLAYER1,"1");
-        p2 = sharedPreferences.getString(Constants.PLAYER2,"1");
+//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
+//        p1 = sharedPreferences.getString(Constants.PLAYER1,"1");
+//        p2 = sharedPreferences.getString(Constants.PLAYER2,"1");
 
     }
 

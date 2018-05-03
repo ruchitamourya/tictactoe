@@ -7,11 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.List;
-
 public class GameGridAdapter extends RecyclerView.Adapter<GameGridAdapter.GameGridViewHolder>{
 
-    private final int[][] mData;
+    private int[][] mData;
     private Context mContext;
     private static GameGridListener mGameGridListener;
 
@@ -40,6 +38,10 @@ public class GameGridAdapter extends RecyclerView.Adapter<GameGridAdapter.GameGr
     @Override
     public int getItemCount() {
         return mData.length*mData[0].length;
+    }
+
+    public void setData(int[][] data) {
+        this.mData = data;
     }
 
     public static class GameGridViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

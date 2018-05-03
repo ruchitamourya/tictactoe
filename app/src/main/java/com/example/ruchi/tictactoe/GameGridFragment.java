@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,8 +19,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.TextView;
+
+import com.example.ruchi.tictactoe.firebase.DataUpdateListener;
+import com.example.ruchi.tictactoe.firebase.FirebaseHelper;
+import com.example.ruchi.tictactoe.firebase.GameData;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +39,8 @@ import java.util.Random;
  * Use the {@link GameGridFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GameGridFragment extends Fragment implements GameGridListener {
+public class GameGridFragment extends Fragment implements GameGridListener, DataUpdateListener {
+    private final String TAG = GameGridFragment.class.getSimpleName();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -47,11 +56,6 @@ public class GameGridFragment extends Fragment implements GameGridListener {
     private LinearLayout linearLayout;
     private TextView text_won;
     private Button restart;
-    private static RadioButton mR1;
-    private static RadioButton mR2;
-
-
-
     private String p1;
     private String p2;
     private Boolean isSoundOn;
@@ -63,6 +67,8 @@ public class GameGridFragment extends Fragment implements GameGridListener {
     int ttt[][] = new int[size][size];
     private static Random random = new Random(System.currentTimeMillis());
     private GridLayoutManager mLayoutManager;
+    private GameGridAdapter adapter;
+    private GameData gameData;
 
 
     public GameGridFragment() {
@@ -85,9 +91,58 @@ public class GameGridFragment extends Fragment implements GameGridListener {
         return fragment;
     }
 
+    public static GameGridFragment newInstance(int gridSize, String gameId) {
+        GameGridFragment fragment = new GameGridFragment();
+        Bundle args = new Bundle();
+        args.putInt("GRID_SIZE", gridSize);
+        args.putBoolean("IS_ANDROID", false);
+        args.putString("GAME_ID", gameId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseHelper.getInstance().setDataUpdateListener(this);
+    }
+
+    private void getTheGame() {
+        if(getArguments().containsKey("GAME_ID")){
+            String gameId = getArguments().getString("GAME_ID");
+            FirebaseHelper.getInstance().listenForDataUpdate(gameId);
+            FirebaseFirestore.getInstance()
+                    .collection("game")
+                    .document(gameId)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            Log.d(TAG, "game data: " + documentSnapshot.getData());
+                            final GameData gameData = documentSnapshot.toObject(GameData.class);
+                            updateGame(gameData);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, "GettingGameData", e);
+                        }
+                    });
+        }
+    }
+
+
+
+    private void updateGame(final GameData gameData) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ttt = AppUtil.get2DArray(gameData.getGamePlayArray(), 3, 3);
+                adapter.setData(ttt);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -112,11 +167,8 @@ public class GameGridFragment extends Fragment implements GameGridListener {
         p2 = sharedPreferences.getString(Constants.PLAYER2, "");
         isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNON,false);
         player1.setText(p1);
-        if (mR1.isChecked()){
-            player2.setText("Android");
-        }else {
-            player2.setText(p2);
-        }
+        player2.setText("Android");
+
 
         setUpRecyclerView(view);
 
@@ -128,6 +180,7 @@ public class GameGridFragment extends Fragment implements GameGridListener {
                 onRestartBtnClick();
             }
         });
+        getTheGame();
         return view;
     }
 
@@ -136,7 +189,7 @@ public class GameGridFragment extends Fragment implements GameGridListener {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_View);
         mLayoutManager = new GridLayoutManager(getContext(), ttt.length);
         recyclerView.setLayoutManager(mLayoutManager);
-        GameGridAdapter adapter = new GameGridAdapter(getContext(), ttt, this);
+        adapter = new GameGridAdapter(getContext(), ttt, this);
         recyclerView.setAdapter(adapter);
     }
 
@@ -150,7 +203,7 @@ public class GameGridFragment extends Fragment implements GameGridListener {
         setPlayerColor();
         setGridText((TextView) view, row, col);
         processWinningLogic(row, col);
-        androidTurnWithDelay();
+        //androidTurnWithDelay();
     }
 
     private void makeSound() {
@@ -172,13 +225,7 @@ public class GameGridFragment extends Fragment implements GameGridListener {
                         e.printStackTrace();
                     }
 
-                    GameGridFragment.this.getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mR1.isChecked()){
-                            playAndroid();}
-                        }
-                    });
+
                 }
             });
             t.start();
@@ -260,6 +307,9 @@ public class GameGridFragment extends Fragment implements GameGridListener {
             turnOfPlayer2(view);
             isPlayer1Active = true;
         }
+        gameData.setGamePlayArray(AppUtil.get1DArray(ttt));
+        gameData.setFirstPlayerTurn(isPlayer1Active);
+        FirebaseHelper.getInstance().updateGameData(gameData);
     }
 
     private void setPlayerColor() {
@@ -339,5 +389,22 @@ public class GameGridFragment extends Fragment implements GameGridListener {
         GameGridFragment fragment = GameGridFragment.newInstance(3, true);
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
+    }
+
+    @Override
+    public void onUpdateSuccess(String gameId) {
+        Log.d(TAG, "onUpdateSuccess "+ gameId);
+    }
+
+    @Override
+    public void onUpdateFailed() {
+        Log.d(TAG, "onUpdateFailed");
+    }
+
+    @Override
+    public void onUpdateReceived(GameData data) {
+        Log.d(TAG, "onUpdateReceived "+data);
+        gameData = data;
+        updateGame(data);
     }
 }

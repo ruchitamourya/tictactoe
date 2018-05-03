@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class AppUtil {
@@ -23,18 +25,17 @@ public class AppUtil {
         return mAppId;
     }
 
-    public static int[] get1DArray(int[][] gamePlayArray2D) {
-        int[] array = new int[gamePlayArray2D.length*2];
-        int i = 0;
+    public static List<Integer> get1DArray(int[][] gamePlayArray2D) {
+        List<Integer> array = new ArrayList<>();
         for(int r = 0; r < gamePlayArray2D.length; r++){
             for(int c = 0; c < gamePlayArray2D[r].length; c++){
-                array[i] = gamePlayArray2D[r][c];
+                array.add(gamePlayArray2D[r][c]);
             }
         }
         return array;
     }
 
-    public static int[][] get2DArray(int[] array1D, int row, int col){
+    public static int[][] get2DArray(List<Integer> array1D, int row, int col){
         int[][] array2D = new int[row][col];
         int r = 0;
         int c = 0;
@@ -47,5 +48,9 @@ public class AppUtil {
             }
         }
         return array2D;
+    }
+
+    public static void setmContext(Context mContext) {
+        AppUtil.mContext = mContext;
     }
 }

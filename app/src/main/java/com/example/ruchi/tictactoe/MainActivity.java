@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.FirebaseApp;
+
 public class MainActivity extends AppCompatActivity{
 
     private Toolbar toolbar;
@@ -22,6 +24,8 @@ public class MainActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
         toolbar.showOverflowMenu();
         getSupportActionBar().setTitle("Tic Tac Toe ");
+        FirebaseApp.initializeApp(this);
+        AppUtil.setmContext(this);
         // toolbar.setOnMenuItemClickListener(this);
 
     }

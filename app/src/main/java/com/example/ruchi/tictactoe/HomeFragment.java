@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,11 +11,9 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
@@ -92,7 +89,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void openGridFragment() {
         FragmentManager manager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        GameGridFragment fragment = GameGridFragment.newInstance(3, true);
+        MultiplayerFragmet fragment = new MultiplayerFragmet();
         transaction.replace(R.id.fragment_container, fragment, fragment.getClass().getSimpleName());
         transaction.addToBackStack(fragment.getClass().getSimpleName());
         transaction.commit();

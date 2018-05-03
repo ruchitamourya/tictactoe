@@ -21,4 +21,11 @@
         android:layout_below="@+id/btn_join_game"
         android:layout_centerHorizontal="true"
         />
+    <Button
+        android:id="@+id/btn_start_game"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/et_code"
+        android:layout_centerHorizontal="true"
+        android:text="Start Game"/>
 </RelativeLayout>

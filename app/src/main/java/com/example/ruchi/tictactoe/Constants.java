@@ -12,7 +12,9 @@ public class Constants {
 
     public static class GameStatus{
         public static final String CREATED = "created";
-        public static final String IN_PROGRESS = "in_progress";
+        public static final String RUNNING = "running";
         public static final String FINISHED = "finished";
+        public static final String PLAYER_2_JOINED = "player_2_joined";
+
     }
 }

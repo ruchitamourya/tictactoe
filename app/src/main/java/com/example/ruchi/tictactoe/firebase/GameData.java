@@ -1,5 +1,7 @@
 package com.example.ruchi.tictactoe.firebase;
 
+import java.util.List;
+
 import static com.example.ruchi.tictactoe.Constants.GameStatus.CREATED;
 
 public class GameData {
@@ -8,7 +10,7 @@ public class GameData {
     private String player2InstanceId;
     private String player1Name;
     private String player2Name;
-    private int[] gamePlayArray;
+    private List<Integer> gamePlayArray;
     private long lastUpdated;
     private long created;
     private boolean firstPlayerTurn;
@@ -18,7 +20,7 @@ public class GameData {
 
     }
 
-    public GameData(String gameId, String player1InstanceId, String player1Name, int[] gamePlayArray){
+    public GameData(String gameId, String player1InstanceId, String player1Name, List<Integer> gamePlayArray){
         //Setup game data
         this.gameId = gameId;
         this.player1InstanceId = player1InstanceId;
@@ -70,11 +72,11 @@ public class GameData {
         this.player2Name = player2Name;
     }
 
-    public int[] getGamePlayArray() {
+    public List<Integer> getGamePlayArray() {
         return gamePlayArray;
     }
 
-    public void setGamePlayArray(int[] gamePlayArray) {
+    public void setGamePlayArray(List<Integer> gamePlayArray) {
         this.gamePlayArray = gamePlayArray;
     }
 

@@ -11,6 +11,8 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import static com.example.ruchi.tictactoe.AppUtil.get1DArray;
@@ -34,7 +36,6 @@ public class FirebaseHelper {
 
     private FirebaseHelper() {
         fireStore = FirebaseFirestore.getInstance();
-
     }
 
     public void setDataUpdateListener(DataUpdateListener dataUpdateListener) {
@@ -42,7 +43,7 @@ public class FirebaseHelper {
     }
 
     public String createNewGame(String name, int[][] gamePlayArray2D) {
-        int[] gamePlayArray = get1DArray(gamePlayArray2D);
+        List<Integer> gamePlayArray = get1DArray(gamePlayArray2D);
         String id = generateGameId();
         GameData gameData = new GameData(id, AppUtil.getAppId(), name, gamePlayArray);
         return updateGameData(gameData);
@@ -56,14 +57,16 @@ public class FirebaseHelper {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        dataUpdateListener.onUpdateSuccess(gameData.getGameId());
+                        if(dataUpdateListener != null)
+                            dataUpdateListener.onUpdateSuccess(gameData.getGameId());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.e(TAG, "updateGameData", e);
-                        dataUpdateListener.onUpdateFailed();
+                        if(dataUpdateListener != null)
+                            dataUpdateListener.onUpdateFailed();
                     }
                 });
         return gameData.getGameId();
@@ -89,7 +92,8 @@ public class FirebaseHelper {
                         if (snapshot != null && snapshot.exists()) {
                             Log.d(TAG, "Current data: " + snapshot.getData());
                             GameData data = snapshot.toObject(GameData.class);
-                            dataUpdateListener.onUpdateReceived(data);
+                            if(dataUpdateListener != null)
+                                dataUpdateListener.onUpdateReceived(data);
                         } else {
                             Log.d(TAG, "Current data: null");
                         }

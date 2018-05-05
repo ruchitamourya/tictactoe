@@ -32,6 +32,7 @@
             android:textSize="18sp" />
 
         <RadioGroup
+            android:id="@+id/radio_group_player"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -66,6 +67,7 @@
                 />
 
             <RadioGroup
+                android:id="@+id/radio_group_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -75,6 +77,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="3*3"
+                    android:tag="3"
                     android:textSize="20sp"
                     android:checked="true"
                     android:textColor="@android:color/black"
@@ -85,6 +88,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="4*4"
+                    android:tag="4"
                     android:textColor="@android:color/black"
                     android:textSize="20sp"
                     android:layout_marginLeft="10dp"/>
@@ -92,7 +96,8 @@
                     android:id="@+id/rbn_5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5*5"
+                    android:text="6*6"
+                    android:tag="6"
                     android:textColor="@android:color/black"
                     android:textSize="20sp"
                     android:layout_marginLeft="10dp"/>

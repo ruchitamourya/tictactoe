@@ -47,8 +47,9 @@ public class GameGridFragment extends Fragment implements GameGridListener {
     private LinearLayout linearLayout;
     private TextView text_won;
     private Button restart;
-    private static RadioButton mR1;
-    private static RadioButton mR2;
+    private static final String GRID_SIZE = "grid_size";
+    private static final String IS_ANDROID = "is_android";
+    boolean isAndroid;
 
 
 
@@ -59,8 +60,8 @@ public class GameGridFragment extends Fragment implements GameGridListener {
     private Boolean isPlayer1Active = true;
     private int count = 0;
     private boolean hasGameFinished = false;
-    int size = 3;
-    int ttt[][] = new int[size][size];
+    private int size;
+    private int ttt[][];
     private static Random random = new Random(System.currentTimeMillis());
     private GridLayoutManager mLayoutManager;
 
@@ -79,8 +80,8 @@ public class GameGridFragment extends Fragment implements GameGridListener {
     public static GameGridFragment newInstance(int gridSize, boolean isAndroid) {
         GameGridFragment fragment = new GameGridFragment();
         Bundle args = new Bundle();
-        args.putInt("GRID_SIZE", gridSize);
-        args.putBoolean("IS_ANDROID", isAndroid);
+        args.putInt(GRID_SIZE, gridSize);
+        args.putBoolean(IS_ANDROID, isAndroid);
         fragment.setArguments(args);
         return fragment;
     }
@@ -112,13 +113,15 @@ public class GameGridFragment extends Fragment implements GameGridListener {
         p2 = sharedPreferences.getString(Constants.PLAYER2, "");
         isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNON,false);
         player1.setText(p1);
-        if (mR1.isChecked()){
+        isAndroid = getArguments().getBoolean(IS_ANDROID,true);
+        if (isAndroid){
             player2.setText("Android");
         }else {
             player2.setText(p2);
         }
-
-        setUpRecyclerView(view);
+        size = getArguments().getInt(GRID_SIZE);
+        ttt = new int[size][size];
+        setUpRecyclerView(view,ttt);
 
         player1.setBackgroundColor(Color.GREEN);
         player1.setTextColor(Color.BLACK);
@@ -131,10 +134,10 @@ public class GameGridFragment extends Fragment implements GameGridListener {
         return view;
     }
 
-    private void setUpRecyclerView(View view) {
+    private void setUpRecyclerView(View view,int ttt[][]) {
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_View);
-        mLayoutManager = new GridLayoutManager(getContext(), ttt.length);
+        mLayoutManager = new GridLayoutManager(getContext(),size);
         recyclerView.setLayoutManager(mLayoutManager);
         GameGridAdapter adapter = new GameGridAdapter(getContext(), ttt, this);
         recyclerView.setAdapter(adapter);
@@ -175,7 +178,7 @@ public class GameGridFragment extends Fragment implements GameGridListener {
                     GameGridFragment.this.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (mR1.isChecked()){
+                            if (isAndroid){
                             playAndroid();}
                         }
                     });
@@ -187,7 +190,6 @@ public class GameGridFragment extends Fragment implements GameGridListener {
 
     private void playAndroid() {
         int[] anMove = getAndroidMove();
-        //ttt[anMove[0]][anMove[1]] = 2;
         int index = ttt.length * anMove[0] + anMove[1];
         View view = mLayoutManager.findViewByPosition(index);
         View requiredTextView = view.findViewById(R.id.text_view);

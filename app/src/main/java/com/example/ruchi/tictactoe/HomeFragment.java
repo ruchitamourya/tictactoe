@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
@@ -33,6 +34,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private EditText player2;
     private String p1 = "";
     private String p2 = "";
+    private RadioGroup radioGroupPlayer;
+    private RadioGroup radioGroupSize;
 
 
     public static HomeFragment newInstance() {
@@ -58,6 +61,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         radioButton3 = view1.findViewById(R.id.rbn_3);
         radioButton4 = view1.findViewById(R.id.rbn_4);
         radioButton5 = view1.findViewById(R.id.rbn_5);
+        radioGroupPlayer = view1.findViewById(R.id.radio_group_player);
+        radioGroupSize = view1.findViewById(R.id.radio_group_size);
         rbtn_android.setOnClickListener(this);
         btn_start.setOnClickListener(this);
         rtn_options.setOnClickListener(this);
@@ -73,7 +78,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 if (p1.equals("")) {
                    // openOptionsDialog();
                 }
-                openGridFragment();
+                boolean isAndroid = isAndroid();
+                int gridSize = getGridSize();
+                openGridFragment(gridSize, isAndroid);
                 break;
             case R.id.btn_ops:
                 openOptionsDialog();
@@ -89,10 +96,27 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    private void openGridFragment() {
+    private int getGridSize() {
+        int id = radioGroupSize.getCheckedRadioButtonId();
+        View view = radioGroupSize.findViewById(id);
+        Object tag = view.getTag();
+        int size = Integer.parseInt(tag.toString());
+        return size;
+    }
+
+    private boolean isAndroid() {
+        boolean isAndroid = false;
+        int radioButtonId = radioGroupPlayer.getCheckedRadioButtonId();
+        if(radioButtonId == R.id.rb_android){
+            isAndroid = true;
+        }
+        return isAndroid;
+    }
+
+    private void openGridFragment(int gridSize, boolean isAndroid) {
         FragmentManager manager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        GameGridFragment fragment = GameGridFragment.newInstance(3, true);
+        GameGridFragment fragment = GameGridFragment.newInstance(gridSize, isAndroid);
         transaction.replace(R.id.fragment_container, fragment, fragment.getClass().getSimpleName());
         transaction.addToBackStack(fragment.getClass().getSimpleName());
         transaction.commit();
@@ -142,7 +166,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 editor.putString(Constants.PLAYER2, p2);
                 editor.putBoolean(Constants.IS_SOUNON,IsSoundOn);
                 editor.apply();
-                openGridFragment();
+                openGridFragment(getGridSize(),isAndroid());
                 dialog.cancel();
             }
         });

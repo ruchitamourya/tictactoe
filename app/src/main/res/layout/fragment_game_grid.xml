@@ -49,7 +49,6 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="3dp"
                 app:cardElevation="3dp"
-                app:cardBackgroundColor="@android:color/black"
                 app:cardUseCompatPadding="true">
 
                 <TextView

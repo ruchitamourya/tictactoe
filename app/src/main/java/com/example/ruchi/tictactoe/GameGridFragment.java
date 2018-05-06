@@ -252,14 +252,14 @@ public class GameGridFragment extends Fragment implements GameGridListener {
         }
     }
 
-    private void setGridText(TextView view, int row, int col) {
+    private void setGridText(TextView textView, int row, int col) {
         if (isPlayer1Active) {
             ttt[row][col] = 1;
-            turnOfPlayer1(view);
+            turnOfPlayer1(textView);
             isPlayer1Active = false;
         } else {
             ttt[row][col] = 2;
-            turnOfPlayer2(view);
+            turnOfPlayer2(textView);
             isPlayer1Active = true;
         }
     }

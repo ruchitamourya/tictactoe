@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity{
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         HomeFragment fragment = HomeFragment.newInstance();
-        transaction.add(R.id.fragment_container, fragment,"homeFragment");
+        transaction.replace(R.id.fragment_container, fragment,"homeFragment");
        // transaction.addToBackStack("homeFragment");
         transaction.commit();
     }

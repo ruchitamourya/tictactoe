@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private Button btn_start;
+    private Button btn_rate;
     private Button rtn_options;
     private RadioButton rbtn_android;
     private RadioButton rbtn_friend;
@@ -58,12 +59,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         radioButton3 = view1.findViewById(R.id.rbn_3);
         radioButton4 = view1.findViewById(R.id.rbn_4);
         radioButton5 = view1.findViewById(R.id.rbn_5);
+        btn_rate = view1.findViewById(R.id.btn_rate);
         radioGroupPlayer = view1.findViewById(R.id.radio_group_player);
         radioGroupSize = view1.findViewById(R.id.radio_group_size);
         rbtn_android.setOnClickListener(this);
         btn_start.setOnClickListener(this);
         rtn_options.setOnClickListener(this);
         rbtn_friend.setOnClickListener(this);
+        btn_rate.setOnClickListener(this);
         return view1;
     }
 
@@ -83,6 +86,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 openOptionsDialog();
                 break;
             case R.id.btn_rate:
+                openMultiplayerFragment();
                 break;
             case R.id.rb_android:
                 break;
@@ -113,14 +117,28 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void openGridFragment(int gridSize, boolean isAndroid) {
         FragmentManager manager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        GameGridFragment fragment = GameGridFragment.newInstance(gridSize, isAndroid);
+        int secondPlayerType;
+        if(isAndroid){
+            secondPlayerType = GameGridFragment.ANDROID;
+        }else {
+            secondPlayerType = GameGridFragment.FRIEND;
+        }
+        Fragment fragment = GameGridFragment.newInstance(gridSize, secondPlayerType);
+        transaction.replace(R.id.fragment_container, fragment, fragment.getClass().getSimpleName());
+        transaction.addToBackStack(fragment.getClass().getSimpleName());
+        transaction.commit();
+    }
+
+    private void openMultiplayerFragment(){
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        Fragment fragment = new MultiplayerFragmet();
         transaction.replace(R.id.fragment_container, fragment, fragment.getClass().getSimpleName());
         transaction.addToBackStack(fragment.getClass().getSimpleName());
         transaction.commit();
     }
 
     private void openOptionsDialog() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_options, null);
         builder.setView(view);

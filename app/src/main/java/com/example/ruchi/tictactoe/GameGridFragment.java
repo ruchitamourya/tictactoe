@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -19,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.ruchi.tictactoe.firebase.DataUpdateListener;
@@ -34,17 +37,11 @@ import java.util.List;
 import java.util.Random;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link GameGridFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class GameGridFragment extends Fragment implements GameGridListener, DataUpdateListener {
     private final String TAG = GameGridFragment.class.getSimpleName();
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public static final int ANDROID = 0;
+    public static final int FRIEND = 1;
+    public static final int ONLINE_FRIEND = 2;
 
     private TextView player1;
     private TextView player2;
@@ -56,14 +53,14 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     private LinearLayout linearLayout;
     private TextView text_won;
     private Button restart;
+    private RelativeLayout mainContainer;
+    private ProgressBar progressBar;
     private static final String GRID_SIZE = "grid_size";
-    private static final String IS_ANDROID = "is_android";
-    boolean isAndroid;
-    private String p1;
-    private String p2;
+    private static final String GAME_ID = "game_id";
+    private static final String SECOND_PLAYER_TYPE = "second_palyer_type";
     private Boolean isSoundOn;
 
-    private Boolean isPlayer1Active = true;
+    private Boolean isPlayer1Turn = true;
     private int count = 0;
     private boolean hasGameFinished = false;
     private int size;
@@ -72,6 +69,8 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     private GridLayoutManager mLayoutManager;
     private GameGridAdapter adapter;
     private GameData gameData;
+    private int secondPlayerType = 0;
+    private boolean amIPlayer1 = false;
 
 
     public GameGridFragment() {
@@ -84,12 +83,11 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
      *
      * @return A new instance of fragment GameGridFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static GameGridFragment newInstance(int gridSize, boolean isAndroid) {
+    public static GameGridFragment newInstance(int gridSize, int secondPlayerType) {
         GameGridFragment fragment = new GameGridFragment();
         Bundle args = new Bundle();
         args.putInt(GRID_SIZE, gridSize);
-        args.putBoolean(IS_ANDROID, isAndroid);
+        args.putInt(SECOND_PLAYER_TYPE, 0);
         fragment.setArguments(args);
         return fragment;
     }
@@ -97,9 +95,9 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     public static GameGridFragment newInstance(int gridSize, String gameId) {
         GameGridFragment fragment = new GameGridFragment();
         Bundle args = new Bundle();
-        args.putInt("GRID_SIZE", gridSize);
-        args.putBoolean("IS_ANDROID", false);
-        args.putString("GAME_ID", gameId);
+        args.putInt(GRID_SIZE, gridSize);
+        args.putString(GAME_ID, gameId);
+        args.putInt(SECOND_PLAYER_TYPE, GameGridFragment.ONLINE_FRIEND);
         fragment.setArguments(args);
         return fragment;
     }
@@ -107,12 +105,16 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.secondPlayerType = getArguments().getInt(SECOND_PLAYER_TYPE, 0);
+        if(this.secondPlayerType != ONLINE_FRIEND){
+            amIPlayer1 = true;
+        }
         FirebaseHelper.getInstance().setDataUpdateListener(this);
     }
 
-    private void getTheGame() {
-        if(getArguments().containsKey("GAME_ID")){
-            String gameId = getArguments().getString("GAME_ID");
+    private void getTheGameFromFirebase() {
+        if (getArguments().containsKey(GAME_ID)) {
+            String gameId = getArguments().getString(GAME_ID);
             FirebaseHelper.getInstance().listenForDataUpdate(gameId);
             FirebaseFirestore.getInstance()
                     .collection("game")
@@ -123,7 +125,8 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             Log.d(TAG, "game data: " + documentSnapshot.getData());
                             final GameData gameData = documentSnapshot.toObject(GameData.class);
-                            updateGame(gameData);
+                            amIPlayer1 = gameData.getPlayer1InstanceId().equals(AppUtil.getAppId());
+                            updateGame(gameData, true);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -135,15 +138,41 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         }
     }
 
-
-
-    private void updateGame(final GameData gameData) {
+    private void updateGame(final GameData gameData, final boolean hideLoader) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 ttt = AppUtil.get2DArray(gameData.getGamePlayArray(), 3, 3);
                 adapter.setData(ttt);
                 adapter.notifyDataSetChanged();
+                if(hideLoader) {
+                    if(amIPlayer1){
+                        player2.setText(gameData.getPlayer2Name());
+                    }else {
+                        player2.setText(gameData.getPlayer1Name());
+                    }
+                    progressBar.setVisibility(View.GONE);
+                    mainContainer.setVisibility(View.VISIBLE);
+                }
+                updateGameStatus(gameData);
+            }
+
+            private void updateGameStatus(GameData gameData) {
+                if(gameData.getGameStatus().equals(Constants.GameStatus.FINISHED)){
+                    switch (gameData.getWinner()){
+                        case 1:
+                            winningPlayer(1);
+                            break;
+                        case 2:
+                            winningPlayer(2);
+                            break;
+                        case 3:
+                            winningPlayer(3);
+                            break;
+                    }
+                }else {
+                    isPlayer1Turn = gameData.isFirstPlayerTurn();
+                }
             }
         });
     }
@@ -164,38 +193,47 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         text_won = view.findViewById(R.id.pl_won);
         restart = view.findViewById(R.id.btn_restart);
         cardView_btn = view.findViewById(R.id.card_v_btn);
+        progressBar = view.findViewById(R.id.progress_bar);
+        mainContainer = view.findViewById(R.id.rl_main_container);
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
-        p1 = sharedPreferences.getString(Constants.PLAYER1, "");
-        p2 = sharedPreferences.getString(Constants.PLAYER2, "");
-        isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNON,false);
+        String p1 = sharedPreferences.getString(Constants.PLAYER1, "");
+        String p2 = sharedPreferences.getString(Constants.PLAYER2, "");
+        isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNON, false);
         player1.setText(p1);
-        isAndroid = getArguments().getBoolean(IS_ANDROID,true);
-        if (isAndroid){
+        if (secondPlayerType == ANDROID) {
             player2.setText("Android");
-        }else {
+        } else if (secondPlayerType == FRIEND) {
             player2.setText(p2);
+        } else {
+            mainContainer.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
         }
-        size = getArguments().getInt(GRID_SIZE);
-        ttt = new int[size][size];
-        setUpRecyclerView(view,ttt);
-
         player1.setBackgroundColor(Color.GREEN);
         player1.setTextColor(Color.BLACK);
+
+        size = getArguments().getInt(GRID_SIZE);
+        ttt = new int[size][size];
+        setUpRecyclerView(view, ttt);
+
         restart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onRestartBtnClick();
             }
         });
-        getTheGame();
         return view;
     }
 
-    private void setUpRecyclerView(View view,int ttt[][]) {
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getTheGameFromFirebase();
+    }
 
+    private void setUpRecyclerView(View view, int ttt[][]) {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_View);
-        mLayoutManager = new GridLayoutManager(getContext(),size);
+        mLayoutManager = new GridLayoutManager(getContext(), size);
         recyclerView.setLayoutManager(mLayoutManager);
         adapter = new GameGridAdapter(getContext(), ttt, this);
         recyclerView.setAdapter(adapter);
@@ -203,7 +241,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
 
     @Override
     public void textOnClick(View view, int row, int col) {
-        if (hasGameFinished) {
+        if (hasGameFinished || (secondPlayerType == ONLINE_FRIEND && !isMyTurn())) {
             return;
         }
         view.setOnClickListener(null);
@@ -211,17 +249,24 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         setPlayerColor();
         setGridText((TextView) view, row, col);
         processWinningLogic(row, col);
-        //androidTurnWithDelay();
+        if(secondPlayerType == ANDROID) {
+            androidTurnWithDelay();
+        }
+    }
+
+    private boolean isMyTurn() {
+        return (isPlayer1Turn && amIPlayer1) || (!isPlayer1Turn && !amIPlayer1);
     }
 
     private void makeSound() {
-        if (isSoundOn){
-        final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.button_click1);
-        mp.start();}
+        if (isSoundOn) {
+            final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.button_click1);
+            mp.start();
+        }
     }
 
     private void androidTurnWithDelay() {
-        if (!hasGameFinished && !isPlayer1Active) {
+        if (!hasGameFinished && !isPlayer1Turn) {
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -237,8 +282,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                     GameGridFragment.this.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (isAndroid){
-                            playAndroid();}
+                            playAndroid();
                         }
                     });
                 }
@@ -292,42 +336,39 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         boolean hasWon = hasThisPlayerWon(row, col);
         if (hasWon) {
             hasGameFinished = true;
-            if (isPlayer1Active) {
-                winningPlayer(player2);
+            if (isPlayer1Turn) {
+                winningPlayer(2);
             } else {
-                winningPlayer(player1);
+                winningPlayer(1);
             }
         } else {
             count++;
             if (count == ttt[0].length * ttt[1].length) {
-                linearLayout.setVisibility(View.GONE);
-                cardView1.setVisibility(View.VISIBLE);
-                text_won.setBackgroundColor(Color.GREEN);
-                text_won.setText(R.string.tie);
-                cardView_btn.setVisibility(View.VISIBLE);
-                restart.setVisibility(View.VISIBLE);
+                winningPlayer(3);
                 hasGameFinished = true;
             }
         }
     }
 
     private void setGridText(TextView view, int row, int col) {
-        if (isPlayer1Active) {
+        if (isPlayer1Turn) {
             ttt[row][col] = 1;
             turnOfPlayer1(view);
-            isPlayer1Active = false;
+            isPlayer1Turn = false;
         } else {
             ttt[row][col] = 2;
             turnOfPlayer2(view);
-            isPlayer1Active = true;
+            isPlayer1Turn = true;
         }
-        gameData.setGamePlayArray(AppUtil.get1DArray(ttt));
-        gameData.setFirstPlayerTurn(isPlayer1Active);
-        FirebaseHelper.getInstance().updateGameData(gameData);
+        if(secondPlayerType == ONLINE_FRIEND) {
+            gameData.setGamePlayArray(AppUtil.get1DArray(ttt));
+            gameData.setFirstPlayerTurn(isPlayer1Turn);
+            FirebaseHelper.getInstance().updateGameData(gameData);
+        }
     }
 
     private void setPlayerColor() {
-        if (isPlayer1Active) {
+        if (isPlayer1Turn) {
             player2.setBackgroundColor(Color.GREEN);
             player2.setTextColor(Color.BLACK);
         } else {
@@ -386,13 +427,41 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         }
         return won;
     }
+//
+//    private void winningPlayer(boolean tie, TextView winnerTextView) {
+//        linearLayout.setVisibility(View.GONE);
+//        cardView1.setVisibility(View.VISIBLE);
+//        text_won.setBackgroundColor(Color.GREEN);
+//        String text = "";
+//        if(tie){
+//            text = getResources().getString(R.string.tie);
+//        }else {
+//            winnerTextView.setBackgroundColor(Color.GREEN);
+//            text = winnerTextView.getText() + " has won !!!";
+//        }
+//        text_won.setText(text);
+//        cardView_btn.setVisibility(View.VISIBLE);
+//        restart.setVisibility(View.VISIBLE);
+//    }
 
-    private void winningPlayer(TextView textView) {
+    private void winningPlayer(int winner) {
+        String text = "";
+        TextView winnerTextView;
+        if(winner == 1){
+            winnerTextView = amIPlayer1 ? player1 : player2;
+            winnerTextView.setBackgroundColor(Color.GREEN);
+            text = winnerTextView.getText() + " has won !!!";
+        }else if(winner == 2){
+            winnerTextView = amIPlayer1 ? player2 : player1;
+            winnerTextView.setBackgroundColor(Color.GREEN);
+            text = winnerTextView.getText() + " has won !!!";
+        }else if(winner == 3){
+            text = getResources().getString(R.string.tie);
+        }
         linearLayout.setVisibility(View.GONE);
         cardView1.setVisibility(View.VISIBLE);
         text_won.setBackgroundColor(Color.GREEN);
-        text_won.setText(textView.getText() + " has won !!!");
-        textView.setBackgroundColor(Color.GREEN);
+        text_won.setText(text);
         cardView_btn.setVisibility(View.VISIBLE);
         restart.setVisibility(View.VISIBLE);
     }
@@ -400,14 +469,14 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     private void onRestartBtnClick() {
         FragmentManager manager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
-        GameGridFragment fragment = GameGridFragment.newInstance(3, true);
+        GameGridFragment fragment = GameGridFragment.newInstance(size, secondPlayerType);
         transaction.replace(R.id.fragment_container, fragment);
         transaction.commit();
     }
 
     @Override
     public void onUpdateSuccess(String gameId) {
-        Log.d(TAG, "onUpdateSuccess "+ gameId);
+        Log.d(TAG, "onUpdateSuccess " + gameId);
     }
 
     @Override
@@ -417,8 +486,8 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
 
     @Override
     public void onUpdateReceived(GameData data) {
-        Log.d(TAG, "onUpdateReceived "+data);
+        Log.d(TAG, "onUpdateReceived " + data);
         gameData = data;
-        updateGame(data);
+        updateGame(data, false);
     }
 }

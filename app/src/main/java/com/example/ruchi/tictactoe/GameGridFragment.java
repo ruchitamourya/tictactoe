@@ -43,8 +43,8 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     public static final int FRIEND = 1;
     public static final int ONLINE_FRIEND = 2;
 
-    private TextView player1;
-    private TextView player2;
+    private TextView tvMyName;
+    private TextView tvFriendName;
 
     private CardView cardView1;
     private CardView cardViewp1;
@@ -147,9 +147,13 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                 adapter.notifyDataSetChanged();
                 if(hideLoader) {
                     if(amIPlayer1){
-                        player2.setText(gameData.getPlayer2Name());
+                        tvFriendName.setText(gameData.getPlayer2Name());
+                        tvMyName.setText(gameData.getPlayer1Name());
+                        setNameViewActive(tvMyName);
                     }else {
-                        player2.setText(gameData.getPlayer1Name());
+                        tvFriendName.setText(gameData.getPlayer1Name());
+                        tvMyName.setText(gameData.getPlayer2Name());
+                        setNameViewActive(tvFriendName);
                     }
                     progressBar.setVisibility(View.GONE);
                     mainContainer.setVisibility(View.VISIBLE);
@@ -159,6 +163,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
 
             private void updateGameStatus(GameData gameData) {
                 if(gameData.getGameStatus().equals(Constants.GameStatus.FINISHED)){
+                    hasGameFinished = true;
                     switch (gameData.getWinner()){
                         case 1:
                             winningPlayer(1);
@@ -182,10 +187,6 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_game_grid, container, false);
-
-        player1 = view.findViewById(R.id.pl1);
-        player2 = view.findViewById(R.id.pl2);
-
         cardView1 = view.findViewById(R.id.card_vw2);
         cardViewp1 = view.findViewById(R.id.card_vp1);
         cardViewp2 = view.findViewById(R.id.card_vp2);
@@ -197,20 +198,11 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         mainContainer = view.findViewById(R.id.rl_main_container);
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
-        String p1 = sharedPreferences.getString(Constants.PLAYER1, "");
-        String p2 = sharedPreferences.getString(Constants.PLAYER2, "");
+        String myName = sharedPreferences.getString(Constants.PLAYER1, "");
+        String friendName = sharedPreferences.getString(Constants.PLAYER2, "");
         isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNON, false);
-        player1.setText(p1);
-        if (secondPlayerType == ANDROID) {
-            player2.setText("Android");
-        } else if (secondPlayerType == FRIEND) {
-            player2.setText(p2);
-        } else {
-            mainContainer.setVisibility(View.GONE);
-            progressBar.setVisibility(View.VISIBLE);
-        }
-        player1.setBackgroundColor(Color.GREEN);
-        player1.setTextColor(Color.BLACK);
+
+        initNameView(view, myName, friendName);
 
         size = getArguments().getInt(GRID_SIZE);
         ttt = new int[size][size];
@@ -223,6 +215,27 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
             }
         });
         return view;
+    }
+
+    private void initNameView(View view, String myName, String friendName) {
+        tvMyName = view.findViewById(R.id.pl1);
+        tvFriendName = view.findViewById(R.id.pl2);
+
+        if (secondPlayerType == ANDROID) {
+            tvMyName.setText(myName);
+            tvFriendName.setText("Android");
+        } else if (secondPlayerType == FRIEND) {
+            tvMyName.setText(myName);
+            tvFriendName.setText(friendName);
+        } else {
+            mainContainer.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setNameViewActive(TextView textView){
+        textView.setBackgroundColor(Color.GREEN);
+        textView.setTextColor(Color.BLACK);
     }
 
     @Override
@@ -246,7 +259,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         }
         view.setOnClickListener(null);
         makeSound();
-        setPlayerColor();
+        setPlayerActive();
         setGridText((TextView) view, row, col);
         processWinningLogic(row, col);
         if(secondPlayerType == ANDROID) {
@@ -367,26 +380,33 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         }
     }
 
-    private void setPlayerColor() {
+    private void setPlayerActive() {
+        if(secondPlayerType == ONLINE_FRIEND){
+            setNameViewActive(tvFriendName);
+            return;
+        }
+
         if (isPlayer1Turn) {
-            player2.setBackgroundColor(Color.GREEN);
-            player2.setTextColor(Color.BLACK);
+            TextView tv = amIPlayer1 ? tvFriendName : tvMyName;
+            setNameViewActive(tv);
         } else {
-            player1.setBackgroundColor(Color.GREEN);
-            player1.setTextColor(Color.BLACK);
+            TextView tv = amIPlayer1 ? tvMyName : tvFriendName;
+            setNameViewActive(tv);
         }
     }
 
     private void turnOfPlayer1(TextView textView) {
         textView.setText("O");
-        player1.setBackgroundColor(Color.BLACK);
-        player1.setTextColor(Color.WHITE);
+        TextView tv = amIPlayer1 ? tvMyName : tvFriendName;
+        tv.setBackgroundColor(Color.BLACK);
+        tv.setTextColor(Color.WHITE);
     }
 
     private void turnOfPlayer2(TextView textView) {
         textView.setText("X");
-        player2.setBackgroundColor(Color.BLACK);
-        player2.setTextColor(Color.WHITE);
+        TextView tv = amIPlayer1 ? tvFriendName : tvMyName;
+        tv.setBackgroundColor(Color.BLACK);
+        tv.setTextColor(Color.WHITE);
     }
 
     private boolean hasThisPlayerWon(int row, int col) {
@@ -448,11 +468,11 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         String text = "";
         TextView winnerTextView;
         if(winner == 1){
-            winnerTextView = amIPlayer1 ? player1 : player2;
+            winnerTextView = amIPlayer1 ? tvMyName : tvFriendName;
             winnerTextView.setBackgroundColor(Color.GREEN);
             text = winnerTextView.getText() + " has won !!!";
         }else if(winner == 2){
-            winnerTextView = amIPlayer1 ? player2 : player1;
+            winnerTextView = amIPlayer1 ? tvFriendName : tvMyName;
             winnerTextView.setBackgroundColor(Color.GREEN);
             text = winnerTextView.getText() + " has won !!!";
         }else if(winner == 3){
@@ -464,6 +484,11 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         text_won.setText(text);
         cardView_btn.setVisibility(View.VISIBLE);
         restart.setVisibility(View.VISIBLE);
+        if(secondPlayerType == ONLINE_FRIEND){
+            gameData.setWinner(winner);
+            gameData.setGameStatus(Constants.GameStatus.FINISHED);
+            FirebaseHelper.getInstance().updateGameData(gameData);
+        }
     }
 
     private void onRestartBtnClick() {

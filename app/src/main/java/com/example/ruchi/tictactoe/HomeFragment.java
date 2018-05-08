@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         switch (id) {
             case R.id.btn_start:
                 if (p1.equals("")) {
-                   // openOptionsDialog();
+                    // openOptionsDialog();
                 }
                 boolean isAndroid = isAndroid();
                 int gridSize = getGridSize();
@@ -108,7 +108,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private boolean isAndroid() {
         boolean isAndroid = false;
         int radioButtonId = radioGroupPlayer.getCheckedRadioButtonId();
-        if(radioButtonId == R.id.rb_android){
+        if (radioButtonId == R.id.rb_android) {
             isAndroid = true;
         }
         return isAndroid;
@@ -154,15 +154,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 p1 = player1.getText().toString();
-                p2 = player2.getText().toString();
-                boolean IsSoundOn;
-                if (on.isChecked()){
-                     IsSoundOn = true;
+                if (rbtn_android.isChecked()) {
+                    player2.setEnabled(false);
                 }else {
+                    p2 = player2.getText().toString();
+                }
+                boolean IsSoundOn;
+                if (on.isChecked()) {
+                    IsSoundOn = true;
+                } else {
                     IsSoundOn = false;
                 }
 
                 if (rbtn_android.isChecked()) {
+                    player2.setEnabled(false);
                     if (p1.equals("")) {
                         p1 = "You";
                     }
@@ -170,7 +175,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 } else {
                     if (p2.equals("")) {
                         p2 = "Friend";
-                        if (p1.equals("")){
+                        if (p1.equals("")) {
                             p1 = "You";
                         }
                     }
@@ -179,9 +184,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 editor = sharedPreferences.edit();
                 editor.putString(Constants.PLAYER1, p1);
                 editor.putString(Constants.PLAYER2, p2);
-                editor.putBoolean(Constants.IS_SOUNON,IsSoundOn);
+                editor.putBoolean(Constants.IS_SOUNON, IsSoundOn);
                 editor.apply();
-                openGridFragment(getGridSize(),isAndroid());
+                openGridFragment(getGridSize(), isAndroid());
                 dialog.cancel();
             }
         });

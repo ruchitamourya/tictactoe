@@ -363,14 +363,14 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         }
     }
 
-    private void setGridText(TextView view, int row, int col) {
+    private void setGridText(TextView textView, int row, int col) {
         if (isPlayer1Turn) {
             ttt[row][col] = 1;
-            turnOfPlayer1(view);
+            turnOfPlayer1(textView);
             isPlayer1Turn = false;
         } else {
             ttt[row][col] = 2;
-            turnOfPlayer2(view);
+            turnOfPlayer2(textView);
             isPlayer1Turn = true;
         }
         if(secondPlayerType == ONLINE_FRIEND) {

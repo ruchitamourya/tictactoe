@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 openOptionsDialog();
                 break;
             case R.id.btn_rate:
-                openMultiplayerFragment();
+                openMultiPlayerFragment();
                 break;
             case R.id.rb_android:
                 break;
@@ -118,9 +118,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         FragmentManager manager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         int secondPlayerType;
-        if(isAndroid){
+        if (isAndroid) {
             secondPlayerType = GameGridFragment.ANDROID;
-        }else {
+        } else {
             secondPlayerType = GameGridFragment.FRIEND;
         }
         Fragment fragment = GameGridFragment.newInstance(gridSize, secondPlayerType);
@@ -129,7 +129,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         transaction.commit();
     }
 
-    private void openMultiplayerFragment(){
+    private void openMultiPlayerFragment() {
         FragmentManager manager = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         Fragment fragment = new MultiplayerFragmet();
@@ -146,6 +146,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         player1 = view.findViewById(R.id.etxt_p1);
         player2 = view.findViewById(R.id.etxt_p2);
+        if (rbtn_android.isChecked()) {
+            player2.setText("Android");
+            player2.setEnabled(false);
+            player2.setClickable(false);
+        }
 
         final RadioButton on = view.findViewById(R.id.rbn_on);
         RadioButton off = view.findViewById(R.id.rbn_off);
@@ -154,29 +159,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 p1 = player1.getText().toString();
-                if (rbtn_android.isChecked()) {
-                    player2.setEnabled(false);
-                }else {
-                    p2 = player2.getText().toString();
-                }
+                if (rbtn_friend.isChecked()){
+                p2 = player2.getText().toString();}
                 boolean IsSoundOn;
                 if (on.isChecked()) {
                     IsSoundOn = true;
                 } else {
                     IsSoundOn = false;
                 }
-
-                if (rbtn_android.isChecked()) {
-                    player2.setEnabled(false);
-                    if (p1.equals("")) {
-                        p1 = "You";
-                    }
-                    p2 = "Android";
-                } else {
-                    if (p2.equals("")) {
-                        p2 = "Friend";
-                        if (p1.equals("")) {
-                            p1 = "You";
+                if (p1.equals("")) {
+                    p1 = "You";
+                    if (rbtn_friend.isChecked()) {
+                        if (p2.equals("")) {
+                            p2 = "Friend";
                         }
                     }
                 }

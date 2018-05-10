@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textColor="@android:color/white"
-        android:text="You"
+        android:text="@string/player1"
         />
 
         <EditText
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:hint="player1"
             android:textSize="20sp"
-            android:layout_marginLeft="45dp"
+            android:layout_marginLeft="15dp"
             android:textColor="@android:color/black"
             tools:ignore="RtlCompat" />
         </LinearLayout>
@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:textColor="@android:color/white"
-                android:text="Android"
+                android:text="@string/player2"
                 />
 
             <EditText

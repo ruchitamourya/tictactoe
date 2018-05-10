@@ -17,24 +17,24 @@ import javax.annotation.Nullable;
 
 import static com.example.ruchi.tictactoe.AppUtil.get1DArray;
 
-public class FirebaseHelper {
-    private static String TAG = FirebaseHelper.class.getSimpleName();
+public class FireBaseHelper {
+    private static String TAG = FireBaseHelper.class.getSimpleName();
     private DataUpdateListener dataUpdateListener;
     private FirebaseFirestore fireStore;
-    private static FirebaseHelper instance;
+    private static FireBaseHelper instance;
 
-    public static FirebaseHelper getInstance() {
+    public static FireBaseHelper getInstance() {
         if (instance == null) {
-            synchronized (FirebaseHelper.class) {
+            synchronized (FireBaseHelper.class) {
                 if (instance == null) {
-                    instance = new FirebaseHelper();
+                    instance = new FireBaseHelper();
                 }
             }
         }
         return instance;
     }
 
-    private FirebaseHelper() {
+    private FireBaseHelper() {
         fireStore = FirebaseFirestore.getInstance();
     }
 
@@ -46,10 +46,11 @@ public class FirebaseHelper {
         List<Integer> gamePlayArray = get1DArray(gamePlayArray2D);
         String id = generateGameId();
         GameData gameData = new GameData(id, AppUtil.getAppId(), name, gamePlayArray);
-        return updateGameData(gameData);
+        updateGameDataAsync(gameData);
+        return id;
     }
 
-    public String updateGameData(final GameData gameData) {
+    public void updateGameDataAsync(final GameData gameData) {
         gameData.setLastUpdated(System.currentTimeMillis());
         fireStore.collection("game")
                 .document(gameData.getGameId())
@@ -64,12 +65,11 @@ public class FirebaseHelper {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "updateGameData", e);
+                        Log.e(TAG, "updateGameDataAsync", e);
                         if(dataUpdateListener != null)
                             dataUpdateListener.onUpdateFailed();
                     }
                 });
-        return gameData.getGameId();
     }
 
     private String generateGameId() {

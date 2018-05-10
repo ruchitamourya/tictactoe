@@ -5,5 +5,5 @@ import android.widget.TextView;
 
 public interface GameGridListener {
 
-    public void textOnClick(View view,int row,int col);
+    void textOnClick(View view,int row,int col);
 }

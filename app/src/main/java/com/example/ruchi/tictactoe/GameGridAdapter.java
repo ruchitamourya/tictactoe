@@ -55,7 +55,7 @@ public class GameGridAdapter extends RecyclerView.Adapter<GameGridAdapter.GameGr
         return mData.length * mData[0].length;
     }
 
-    public void setData(int[][] data) {
+    public void setArrayData(int[][] data) {
         this.mData = data;
     }
 

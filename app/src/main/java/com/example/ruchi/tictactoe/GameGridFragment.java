@@ -25,7 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.ruchi.tictactoe.firebase.DataUpdateListener;
-import com.example.ruchi.tictactoe.firebase.FirebaseHelper;
+import com.example.ruchi.tictactoe.firebase.FireBaseHelper;
 import com.example.ruchi.tictactoe.firebase.GameData;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -57,7 +57,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     private ProgressBar progressBar;
     private static final String GRID_SIZE = "grid_size";
     private static final String GAME_ID = "game_id";
-    private static final String SECOND_PLAYER_TYPE = "second_palyer_type";
+    private static final String SECOND_PLAYER_TYPE = "second_player_type";
     private Boolean isSoundOn;
 
     private Boolean isPlayer1Turn = true;
@@ -87,7 +87,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         GameGridFragment fragment = new GameGridFragment();
         Bundle args = new Bundle();
         args.putInt(GRID_SIZE, gridSize);
-        args.putInt(SECOND_PLAYER_TYPE, 0);
+        args.putInt(SECOND_PLAYER_TYPE, secondPlayerType);
         fragment.setArguments(args);
         return fragment;
     }
@@ -106,51 +106,49 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.secondPlayerType = getArguments().getInt(SECOND_PLAYER_TYPE, 0);
-        if(this.secondPlayerType != ONLINE_FRIEND){
+        if (this.secondPlayerType != ONLINE_FRIEND) {
             amIPlayer1 = true;
         }
-        FirebaseHelper.getInstance().setDataUpdateListener(this);
+        FireBaseHelper.getInstance().setDataUpdateListener(this);
     }
 
-    private void getTheGameFromFirebase() {
-        if (getArguments().containsKey(GAME_ID)) {
-            String gameId = getArguments().getString(GAME_ID);
-            FirebaseHelper.getInstance().listenForDataUpdate(gameId);
-            FirebaseFirestore.getInstance()
-                    .collection("game")
-                    .document(gameId)
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            Log.d(TAG, "game data: " + documentSnapshot.getData());
-                            final GameData gameData = documentSnapshot.toObject(GameData.class);
-                            amIPlayer1 = gameData.getPlayer1InstanceId().equals(AppUtil.getAppId());
-                            updateGame(gameData, true);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e(TAG, "GettingGameData", e);
-                        }
-                    });
-        }
+    private void getTheGameFromFireBase() {
+        String gameId = getArguments().getString(GAME_ID);
+        FireBaseHelper.getInstance().listenForDataUpdate(gameId);
+        FirebaseFirestore.getInstance()
+                .collection("game")
+                .document(gameId)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Log.d(TAG, "game data: " + documentSnapshot.getData());
+                        final GameData gameData = documentSnapshot.toObject(GameData.class);
+                        amIPlayer1 = gameData.getPlayer1InstanceId().equals(AppUtil.getAppId());
+                        updateGame(gameData, true);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "GettingGameData", e);
+                    }
+                });
     }
 
     private void updateGame(final GameData gameData, final boolean hideLoader) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ttt = AppUtil.get2DArray(gameData.getGamePlayArray(), 3, 3);
-                adapter.setData(ttt);
+                ttt = AppUtil.get2DArray(gameData.getGamePlayArray(), ttt.length, ttt.length);
+                adapter.setArrayData(ttt);
                 adapter.notifyDataSetChanged();
-                if(hideLoader) {
-                    if(amIPlayer1){
-                        tvFriendName.setText(gameData.getPlayer2Name());
+                if (hideLoader) {
+                    if (amIPlayer1) {
                         tvMyName.setText(gameData.getPlayer1Name());
+                        tvFriendName.setText(gameData.getPlayer2Name());
                         setNameViewActive(tvMyName);
-                    }else {
+                    } else {
                         tvFriendName.setText(gameData.getPlayer1Name());
                         tvMyName.setText(gameData.getPlayer2Name());
                         setNameViewActive(tvFriendName);
@@ -162,9 +160,9 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
             }
 
             private void updateGameStatus(GameData gameData) {
-                if(gameData.getGameStatus().equals(Constants.GameStatus.FINISHED)){
+                if (gameData.getGameStatus().equals(Constants.GameStatus.FINISHED)) {
                     hasGameFinished = true;
-                    switch (gameData.getWinner()){
+                    switch (gameData.getWinner()) {
                         case 1:
                             winningPlayer(1);
                             break;
@@ -175,7 +173,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                             winningPlayer(3);
                             break;
                     }
-                }else {
+                } else {
                     isPlayer1Turn = gameData.isFirstPlayerTurn();
                 }
             }
@@ -220,6 +218,9 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     private void initNameView(View view, String myName, String friendName) {
         tvMyName = view.findViewById(R.id.pl1);
         tvFriendName = view.findViewById(R.id.pl2);
+        setNameViewActive(tvMyName);
+//        tvMyName.setBackgroundColor(Color.GREEN);
+//        tvMyName.setTextColor(Color.BLACK);
 
         if (secondPlayerType == ANDROID) {
             tvMyName.setText(myName);
@@ -233,7 +234,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         }
     }
 
-    private void setNameViewActive(TextView textView){
+    private void setNameViewActive(TextView textView) {
         textView.setBackgroundColor(Color.GREEN);
         textView.setTextColor(Color.BLACK);
     }
@@ -241,7 +242,9 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getTheGameFromFirebase();
+        if (secondPlayerType == ONLINE_FRIEND) {
+            getTheGameFromFireBase();
+        }
     }
 
     private void setUpRecyclerView(View view, int ttt[][]) {
@@ -262,7 +265,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         setPlayerActive();
         setGridText((TextView) view, row, col);
         processWinningLogic(row, col);
-        if(secondPlayerType == ANDROID) {
+        if (secondPlayerType == ANDROID) {
             androidTurnWithDelay();
         }
     }
@@ -290,8 +293,6 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
-
                     GameGridFragment.this.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -373,19 +374,18 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
             turnOfPlayer2(textView);
             isPlayer1Turn = true;
         }
-        if(secondPlayerType == ONLINE_FRIEND) {
+        if (secondPlayerType == ONLINE_FRIEND) {
             gameData.setGamePlayArray(AppUtil.get1DArray(ttt));
             gameData.setFirstPlayerTurn(isPlayer1Turn);
-            FirebaseHelper.getInstance().updateGameData(gameData);
+            FireBaseHelper.getInstance().updateGameDataAsync(gameData);
         }
     }
 
     private void setPlayerActive() {
-        if(secondPlayerType == ONLINE_FRIEND){
+        if (secondPlayerType == ONLINE_FRIEND) {
             setNameViewActive(tvFriendName);
             return;
         }
-
         if (isPlayer1Turn) {
             TextView tv = amIPlayer1 ? tvFriendName : tvMyName;
             setNameViewActive(tv);
@@ -410,9 +410,11 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     }
 
     private boolean hasThisPlayerWon(int row, int col) {
-        boolean won = checkRow(row, col);
-        won = won || checkColumn(row, col);
-        won = won || checkAllDiagonal(row, col);
+
+        boolean won = checkHorizontal(row, col);
+        won = won || checkVertical(row, col);
+        won = won || checkDiagonalA(row, col);
+        won = won || checkDiagonalB(row, col);
         return won;
     }
 
@@ -447,35 +449,102 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         }
         return won;
     }
-//
-//    private void winningPlayer(boolean tie, TextView winnerTextView) {
-//        linearLayout.setVisibility(View.GONE);
-//        cardView1.setVisibility(View.VISIBLE);
-//        text_won.setBackgroundColor(Color.GREEN);
-//        String text = "";
-//        if(tie){
-//            text = getResources().getString(R.string.tie);
-//        }else {
-//            winnerTextView.setBackgroundColor(Color.GREEN);
-//            text = winnerTextView.getText() + " has won !!!";
-//        }
-//        text_won.setText(text);
-//        cardView_btn.setVisibility(View.VISIBLE);
-//        restart.setVisibility(View.VISIBLE);
-//    }
+
+    private boolean checkVertical(int row, int col) {
+        List<Integer> indexList;
+        int count = 0;
+        int i = row - 1;
+        while (i >= 0 && ttt[i][col] != 0 && ttt[i][col] == ttt[row][col]) {
+            count++;
+          indexList =  storeIndex(i,col);
+            i--;
+        }
+        i = row + 1;
+        while (i < ttt.length && ttt[i][col] != 0 && ttt[i][col] == ttt[row][col]) {
+            count++;
+            i++;
+        }
+        if (count == 3){
+            int index = ttt[row][col];
+            View view = mLayoutManager.findViewByPosition(index);
+            View requiredTextView = view.findViewById(R.id.text_view);
+            requiredTextView.setBackgroundColor(Color.GREEN);
+        }
+        return count == 3;
+    }
+
+    private boolean checkHorizontal(int row, int col) {
+        int count = 0;
+        int i = col - 1;
+        while (i >= 0 && ttt[row][i] != 0 && ttt[row][i] == ttt[row][col]) {
+            count++;
+            i--;
+        }
+        i = col + 1;
+        while (i < ttt.length && ttt[row][i] != 0 && ttt[row][i] == ttt[row][col]) {
+            count++;
+            i++;
+        }
+        return count == 3;
+    }
+
+    private boolean checkDiagonalA(int row, int col) {
+        int count = 0;
+        int i = row - 1;
+        int j = col + 1;
+        while (i >= 0 && j < ttt.length && ttt[i][j] != 0 && ttt[i][j] == ttt[row][col]) {
+            count++;
+            i--;
+            j++;
+        }
+        i = row + 1;
+        j = col - 1;
+        while (i < ttt.length && j >= 0 && ttt[i][j] != 0 && ttt[i][j] == ttt[row][col]) {
+            count++;
+            i++;
+            j--;
+        }
+        return count == 3;
+    }
+
+    private boolean checkDiagonalB(int row, int col) {
+        int count = 0;
+        int i = row - 1;
+        int j = col - 1;
+        while (i >= 0 && j >= 0 && ttt[i][j] != 0 && ttt[i][j] == ttt[row][col]) {
+            count++;
+            i--;
+            j--;
+        }
+        i = row + 1;
+        j = col + 1;
+        while (i < ttt.length && j < ttt.length && ttt[i][j] != 0 && ttt[i][j] == ttt[row][col]) {
+            count++;
+            i++;
+            j++;
+        }
+        return count == 3;
+    }
+
+    private List<Integer> storeIndex(int row,int col){
+        List<Integer> indexList = new ArrayList<>();
+        int index = ttt[row][col];
+        indexList.add(index);
+        return indexList;
+    }
 
     private void winningPlayer(int winner) {
         String text = "";
         TextView winnerTextView;
-        if(winner == 1){
+        if (winner == 1) {
             winnerTextView = amIPlayer1 ? tvMyName : tvFriendName;
             winnerTextView.setBackgroundColor(Color.GREEN);
             text = winnerTextView.getText() + " has won !!!";
-        }else if(winner == 2){
+        } else if (winner == 2) {
             winnerTextView = amIPlayer1 ? tvFriendName : tvMyName;
             winnerTextView.setBackgroundColor(Color.GREEN);
             text = winnerTextView.getText() + " has won !!!";
-        }else if(winner == 3){
+        } else if (winner == 3) {
             text = getResources().getString(R.string.tie);
         }
         linearLayout.setVisibility(View.GONE);
@@ -484,10 +553,10 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         text_won.setText(text);
         cardView_btn.setVisibility(View.VISIBLE);
         restart.setVisibility(View.VISIBLE);
-        if(secondPlayerType == ONLINE_FRIEND){
+        if (secondPlayerType == ONLINE_FRIEND) {
             gameData.setWinner(winner);
             gameData.setGameStatus(Constants.GameStatus.FINISHED);
-            FirebaseHelper.getInstance().updateGameData(gameData);
+            FireBaseHelper.getInstance().updateGameDataAsync(gameData);
         }
     }
 

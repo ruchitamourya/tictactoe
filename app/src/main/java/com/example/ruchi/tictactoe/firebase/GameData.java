@@ -15,7 +15,6 @@ public class GameData {
     private long created;
     private boolean firstPlayerTurn;
     private String gameStatus;
-    private int lastClickedCell = -1;
     private int winner = 0;
 
     public GameData(){
@@ -112,14 +111,6 @@ public class GameData {
 
     public void setGameStatus(String gameStatus) {
         this.gameStatus = gameStatus;
-    }
-
-    public int getLastClickedCell() {
-        return lastClickedCell;
-    }
-
-    public void setLastClickedCell(int lastClickedCell) {
-        this.lastClickedCell = lastClickedCell;
     }
 
     public int getWinner() {

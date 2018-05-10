@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.ruchi.tictactoe.firebase.FirebaseHelper;
+import com.example.ruchi.tictactoe.firebase.FireBaseHelper;
 import com.example.ruchi.tictactoe.firebase.GameData;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,7 +46,7 @@ public class MultiplayerFragmet extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         int id = v.getId();
         if(id == R.id.btn_host_game){
-            String gameId = FirebaseHelper.getInstance().createNewGame("Ruchita", new int[3][3]);
+            String gameId = FireBaseHelper.getInstance().createNewGame("Ruchita", new int[3][3]);
             codeText.setText(gameId);
         }else if(id == R.id.btn_join_game){
             String code = codeText.getText().toString();
@@ -84,7 +84,7 @@ public class MultiplayerFragmet extends Fragment implements View.OnClickListener
                         gameData.setPlayer2Name("Chandan");
                         gameData.setPlayer2InstanceId(AppUtil.getAppId());
                         gameData.setGameStatus(Constants.GameStatus.PLAYER_2_JOINED);
-                        FirebaseHelper.getInstance().updateGameData(gameData);
+                        FireBaseHelper.getInstance().updateGameDataAsync(gameData);
                         openGridFragment(gameId);
                     }
                 })

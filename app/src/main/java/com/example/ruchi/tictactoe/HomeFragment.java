@@ -75,9 +75,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         int id = v.getId();
         switch (id) {
             case R.id.btn_start:
-                if (p1.equals("")) {
-                    // openOptionsDialog();
-                }
                 boolean isAndroid = isAndroid();
                 int gridSize = getGridSize();
                 openGridFragment(gridSize, isAndroid);
@@ -86,12 +83,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 openOptionsDialog();
                 break;
             case R.id.btn_rate:
-                openMultiPlayerFragment();
-                break;
-            case R.id.rb_android:
-                break;
-            case R.id.rb_friend:
-                openOptionsDialog();
                 break;
         }
 
@@ -159,8 +150,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 p1 = player1.getText().toString();
-                if (rbtn_friend.isChecked()){
-                p2 = player2.getText().toString();}
+                if (rbtn_friend.isChecked()) {
+                    p2 = player2.getText().toString();
+                }
                 boolean IsSoundOn;
                 if (on.isChecked()) {
                     IsSoundOn = true;
@@ -181,7 +173,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 editor.putString(Constants.PLAYER2, p2);
                 editor.putBoolean(Constants.IS_SOUNON, IsSoundOn);
                 editor.apply();
-                openGridFragment(getGridSize(), isAndroid());
                 dialog.cancel();
             }
         });

@@ -26,6 +26,7 @@ public class GameGridAdapter extends RecyclerView.Adapter<GameGridAdapter.GameGr
         View view = inflater.inflate(R.layout.grid_item, parent, false);
         CardView cardView = view.findViewById(R.id.grid_card_view);
         TextView textView = cardView.findViewById(R.id.text_view);
+
         final int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
         int cardViewWidth = (screenWidth - 48) / mData.length;
         if (mData.length == 3) {
@@ -36,7 +37,6 @@ public class GameGridAdapter extends RecyclerView.Adapter<GameGridAdapter.GameGr
         } else {
             textView.setTextSize(30f);
             cardView.setLayoutParams(new CardView.LayoutParams(cardViewWidth, cardViewWidth));
-
         }
         GameGridViewHolder holder = new GameGridViewHolder(view);
         return holder;

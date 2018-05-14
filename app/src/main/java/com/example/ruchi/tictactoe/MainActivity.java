@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity{
         openHomeFragment();
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.showOverflowMenu();
+      //  toolbar.showOverflowMenu();
         getSupportActionBar().setTitle("Tic Tac Toe ");
         FirebaseApp.initializeApp(this);
         AppUtil.setmContext(this);
@@ -30,18 +30,11 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
-        return true;
-    }
-
-    private void openAddPlayerFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        AddPlayerFragment fragment = AddPlayerFragment.newInstance();
-        fragment.show(transaction, null);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_toolbar, menu);
+//        return true;
+//    }
 
     private void openHomeFragment() {
         FragmentManager manager = getSupportFragmentManager();
@@ -53,18 +46,16 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-         //Handle item selection
-        switch (item.getItemId()) {
-            case R.id.add_player:
-                openAddPlayerFragment();
-                return true;
-            case R.id.change_player:
-               //openHomeFragment();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//         //Handle item selection
+//        switch (item.getItemId()) {
+//            case R.id.add_player:
+//                return true;
+//            case R.id.change_player:
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 }

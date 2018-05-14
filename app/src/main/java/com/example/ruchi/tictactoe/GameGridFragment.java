@@ -36,19 +36,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
 public class GameGridFragment extends Fragment implements GameGridListener, DataUpdateListener {
     private final String TAG = GameGridFragment.class.getSimpleName();
     public static final int ANDROID = 0;
     public static final int FRIEND = 1;
     public static final int ONLINE_FRIEND = 2;
-
     private TextView tvMyName;
     private TextView tvFriendName;
-
     private CardView cardView1;
-    private CardView cardViewp1;
-    private CardView cardViewp2;
     private CardView cardView_btn;
     private LinearLayout linearLayout;
     private TextView text_won;
@@ -59,7 +54,6 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     private static final String GAME_ID = "game_id";
     private static final String SECOND_PLAYER_TYPE = "second_player_type";
     private Boolean isSoundOn;
-
     private Boolean isPlayer1Turn = true;
     private int count = 0;
     private boolean hasGameFinished = false;
@@ -186,8 +180,6 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_game_grid, container, false);
         cardView1 = view.findViewById(R.id.card_vw2);
-        cardViewp1 = view.findViewById(R.id.card_vp1);
-        cardViewp2 = view.findViewById(R.id.card_vp2);
         linearLayout = view.findViewById(R.id.pl_ll);
         text_won = view.findViewById(R.id.pl_won);
         restart = view.findViewById(R.id.btn_restart);
@@ -199,9 +191,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         String myName = sharedPreferences.getString(Constants.PLAYER1, "");
         String friendName = sharedPreferences.getString(Constants.PLAYER2, "");
         isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNON, false);
-
         initNameView(view, myName, friendName);
-
         size = getArguments().getInt(GRID_SIZE);
         ttt = new int[size][size];
         setUpRecyclerView(view, ttt);
@@ -219,9 +209,6 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         tvMyName = view.findViewById(R.id.pl1);
         tvFriendName = view.findViewById(R.id.pl2);
         setNameViewActive(tvMyName);
-//        tvMyName.setBackgroundColor(Color.GREEN);
-//        tvMyName.setTextColor(Color.BLACK);
-
         if (secondPlayerType == ANDROID) {
             tvMyName.setText(myName);
             tvFriendName.setText("Android");
@@ -264,9 +251,10 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         makeSound();
         setPlayerActive();
         setGridText((TextView) view, row, col);
-        processWinningLogic(row, col);
+        List<Integer> indexList = new ArrayList<>();
+        processWinningLogic(row, col, indexList);
         if (secondPlayerType == ANDROID) {
-            androidTurnWithDelay();
+            androidTurnWithDelay(indexList);
         }
     }
 
@@ -281,7 +269,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         }
     }
 
-    private void androidTurnWithDelay() {
+    private void androidTurnWithDelay(final List<Integer> indexList) {
         if (!hasGameFinished && !isPlayer1Turn) {
             Thread t = new Thread(new Runnable() {
                 @Override
@@ -296,7 +284,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                     GameGridFragment.this.getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            playAndroid();
+                            playAndroid(indexList);
                         }
                     });
                 }
@@ -305,15 +293,15 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         }
     }
 
-    private void playAndroid() {
-        int[] anMove = getAndroidMove();
+    private void playAndroid(List<Integer> indexList) {
+        int[] anMove = getAndroidMove(indexList);
         int index = ttt.length * anMove[0] + anMove[1];
         View view = mLayoutManager.findViewByPosition(index);
         View requiredTextView = view.findViewById(R.id.text_view);
         textOnClick(requiredTextView, anMove[0], anMove[1]);
     }
 
-    private int[] getAndroidMove() {
+    private int[] getAndroidMove(List<Integer> indexList) {
         List<int[]> emptyCells = new ArrayList<>();
         int[] p1Winning = new int[]{-1, -1};
         for (int i = 0; i < ttt.length; i++) {
@@ -321,13 +309,13 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                 if (ttt[i][j] == 0) {
                     emptyCells.add(new int[]{i, j});
                     ttt[i][j] = 1;
-                    boolean won = hasThisPlayerWon(i, j);
+                    boolean won = hasThisPlayerWon(i, j, indexList, false);
                     if (won) {
                         p1Winning[0] = i;
                         p1Winning[1] = j;
                     }
                     ttt[i][j] = 2;
-                    won = hasThisPlayerWon(i, j);
+                    won = hasThisPlayerWon(i, j, indexList, false);
                     if (won) {
                         return new int[]{i, j};
                     }
@@ -335,6 +323,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                 }
             }
         }
+
         if (p1Winning[0] != -1) {
             return p1Winning;
         }
@@ -346,8 +335,9 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         return emptyCells.get(cellToUse);
     }
 
-    private void processWinningLogic(int row, int col) {
-        boolean hasWon = hasThisPlayerWon(row, col);
+    private void processWinningLogic(int row, int col, List<Integer> indexList) {
+
+        boolean hasWon = hasThisPlayerWon(row, col, indexList, true);
         if (hasWon) {
             hasGameFinished = true;
             if (isPlayer1Turn) {
@@ -409,90 +399,108 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         tv.setTextColor(Color.WHITE);
     }
 
-    private boolean hasThisPlayerWon(int row, int col) {
+    private boolean hasThisPlayerWon(int row, int col, List<Integer> indexList, boolean isRealMove) {
 
-        boolean won = checkHorizontal(row, col);
-        won = won || checkVertical(row, col);
-        won = won || checkDiagonalA(row, col);
-        won = won || checkDiagonalB(row, col);
+        boolean won = checkHorizontal(row, col, indexList);
+        won = won || checkVertical(row, col, indexList);
+        won = won || checkDiagonalA(row, col, indexList);
+        won = won || checkDiagonalB(row, col, indexList);
+        if (won && isRealMove) {
+            indexList = storeIndex(indexList, row, col);
+            for (int j = 0; j < indexList.size(); j++) {
+                int position = indexList.get(j);
+                View view = mLayoutManager.findViewByPosition(position);
+                View requiredTextView = view.findViewById(R.id.text_view);
+                requiredTextView.setBackgroundColor(Color.GREEN);
+            }
+        }
         return won;
     }
 
-    private boolean checkAllDiagonal(int row, int col) {
+    private boolean checkAllDiagonal(int row, int col, List<Integer> indexList) {
         boolean won = true;
         if ((row == col)) {
             for (int i = 0; i < ttt[0].length; i++) {
                 won = won && ttt[row][col] == ttt[i][i];
+                indexList = storeIndex(indexList, i, i);
             }
             return won;
         } else if (row + col == (ttt.length - 1)) {
             for (int i = 0; i < ttt[0].length; i++) {
                 won = won && ttt[row][col] == ttt[i][ttt.length - 1 - i];
+                indexList = storeIndex(indexList, i, ttt.length - 1 - i);
             }
             return won;
         }
         return false;
     }
 
-    private boolean checkColumn(int row, int col) {
+    private boolean checkColumn(int row, int col, List<Integer> indexList) {
         boolean won = true;
         for (int i = 0; i < ttt[col].length; i++) {
             won = won && ttt[i][col] == ttt[row][col];
+            indexList = storeIndex(indexList, i, col);
         }
         return won;
     }
 
-    private boolean checkRow(int row, int col) {
+    private boolean checkRow(int row, int col, List<Integer> indexList) {
         boolean won = true;
         for (int i = 0; i < ttt[row].length; i++) {
             won = won && ttt[row][i] == ttt[row][col];
+            indexList = storeIndex(indexList, row, i);
         }
         return won;
     }
 
-    private boolean checkVertical(int row, int col) {
-        List<Integer> indexList;
+    private boolean checkVertical(int row, int col, List<Integer> indexList) {
         int count = 0;
         int i = row - 1;
+        indexList.clear();
         while (i >= 0 && ttt[i][col] != 0 && ttt[i][col] == ttt[row][col]) {
+            indexList = storeIndex(indexList, i, col);
+            Log.d(TAG, "indexlist = " + indexList);
             count++;
-          indexList =  storeIndex(i,col);
+            Log.d(TAG, "count row-1 = " + count);
             i--;
         }
         i = row + 1;
         while (i < ttt.length && ttt[i][col] != 0 && ttt[i][col] == ttt[row][col]) {
+            indexList = storeIndex(indexList, i, col);
+            Log.d(TAG, "indexlist = " + indexList);
             count++;
+            Log.d(TAG, "count row+1 = " + count);
             i++;
         }
-        if (count == 3){
-            int index = ttt[row][col];
-            View view = mLayoutManager.findViewByPosition(index);
-            View requiredTextView = view.findViewById(R.id.text_view);
-            requiredTextView.setBackgroundColor(Color.GREEN);
-        }
-        return count == 3;
+        return count == 3 || count == ttt.length - 1;
     }
 
-    private boolean checkHorizontal(int row, int col) {
+
+    private boolean checkHorizontal(int row, int col, List<Integer> indexList) {
         int count = 0;
         int i = col - 1;
+        indexList.clear();
         while (i >= 0 && ttt[row][i] != 0 && ttt[row][i] == ttt[row][col]) {
+            indexList = storeIndex(indexList, row, i);
             count++;
             i--;
         }
         i = col + 1;
         while (i < ttt.length && ttt[row][i] != 0 && ttt[row][i] == ttt[row][col]) {
+            indexList = storeIndex(indexList, row, i);
             count++;
             i++;
         }
-        return count == 3;
+        return count == 3 || count == ttt.length - 1;
     }
 
-    private boolean checkDiagonalA(int row, int col) {
+    private boolean checkDiagonalA(int row, int col, List<Integer> indexList) {
         int count = 0;
         int i = row - 1;
         int j = col + 1;
+        indexList.clear();
         while (i >= 0 && j < ttt.length && ttt[i][j] != 0 && ttt[i][j] == ttt[row][col]) {
+            indexList = storeIndex(indexList, i, j);
             count++;
             i--;
             j++;
@@ -500,18 +508,21 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         i = row + 1;
         j = col - 1;
         while (i < ttt.length && j >= 0 && ttt[i][j] != 0 && ttt[i][j] == ttt[row][col]) {
+            indexList = storeIndex(indexList, i, j);
             count++;
             i++;
             j--;
         }
-        return count == 3;
+        return count == 3 || count == ttt.length - 1;
     }
 
-    private boolean checkDiagonalB(int row, int col) {
+    private boolean checkDiagonalB(int row, int col, List<Integer> indexList) {
         int count = 0;
         int i = row - 1;
         int j = col - 1;
+        indexList.clear();
         while (i >= 0 && j >= 0 && ttt[i][j] != 0 && ttt[i][j] == ttt[row][col]) {
+            indexList = storeIndex(indexList, i, j);
             count++;
             i--;
             j--;
@@ -519,16 +530,16 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         i = row + 1;
         j = col + 1;
         while (i < ttt.length && j < ttt.length && ttt[i][j] != 0 && ttt[i][j] == ttt[row][col]) {
+            indexList = storeIndex(indexList, i, j);
             count++;
             i++;
             j++;
         }
-        return count == 3;
+        return count == 3 || count == ttt.length - 1;
     }
 
-    private List<Integer> storeIndex(int row,int col){
-        List<Integer> indexList = new ArrayList<>();
-        int index = ttt[row][col];
+    private List<Integer> storeIndex(List<Integer> indexList, int row, int col) {
+        int index = ttt.length * row + col;
         indexList.add(index);
         return indexList;
     }

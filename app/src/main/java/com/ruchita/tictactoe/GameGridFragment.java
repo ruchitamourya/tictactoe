@@ -249,6 +249,13 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
 
     @Override
     public void textOnClick(View view, int row, int col) {
+        if(secondPlayerType == ANDROID && !isMyTurn()){
+            return;
+        }
+        onClick(view, row, col);
+    }
+
+    private void onClick(View view, int row, int col) {
         if (hasGameFinished || (secondPlayerType == ONLINE_FRIEND && !isMyTurn())) {
             return;
         }
@@ -303,7 +310,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         int index = ttt.length * anMove[0] + anMove[1];
         View view = mLayoutManager.findViewByPosition(index);
         View requiredTextView = view.findViewById(R.id.text_view);
-        textOnClick(requiredTextView, anMove[0], anMove[1]);
+        onClick(requiredTextView, anMove[0], anMove[1]);
     }
 
     private int[] getAndroidMove(List<Integer> indexList) {

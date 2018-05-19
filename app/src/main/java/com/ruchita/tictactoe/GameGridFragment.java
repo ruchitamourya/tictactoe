@@ -189,8 +189,8 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         mainContainer = view.findViewById(R.id.rl_main_container);
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
-        String myName = sharedPreferences.getString(Constants.PLAYER1, "");
-        String friendName = sharedPreferences.getString(Constants.PLAYER2, "");
+        String myName = sharedPreferences.getString(Constants.PLAYER1, getString(R.string.you));
+        String friendName = sharedPreferences.getString(Constants.PLAYER2, getString(R.string.friend));
         isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNON, false);
         initNameView(view, myName, friendName);
         size = getArguments().getInt(GRID_SIZE);
@@ -212,13 +212,9 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         setNameViewActive(tvMyName);
         if (secondPlayerType == ANDROID) {
             tvMyName.setText(myName);
-            tvFriendName.setText("Android");
+            tvFriendName.setText(R.string.android);
         } else if (secondPlayerType == FRIEND) {
-            if(myName.equals("")){
-                tvMyName.setText("Friend");
-            }else {
-                tvMyName.setText(myName);
-            }
+            tvMyName.setText(myName);
             tvFriendName.setText(friendName);
         } else {
             mainContainer.setVisibility(View.GONE);

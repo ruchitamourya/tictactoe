@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private RadioButton radioButton3;
     private RadioButton radioButton4;
     private RadioButton radioButton5;
-    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private EditText player1;
     private EditText player2;
@@ -47,9 +47,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-        editor.apply();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -136,18 +133,33 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_options, null);
         builder.setView(view);
         final Dialog dialog = builder.create();
-
         player1 = view.findViewById(R.id.etxt_p1);
         player2 = view.findViewById(R.id.etxt_p2);
+        final RadioGroup radioGroup_on_off = view.findViewById(R.id.radio_group_on_off);
+        Button done = view.findViewById(R.id.btn_done);
+        //Get setting values from pref
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
+        String myName = sharedPreferences.getString(Constants.PLAYER1, "");
+        String friendName = sharedPreferences.getString(Constants.PLAYER2, "");
+        boolean isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNON, true);
+        if(!TextUtils.isEmpty(myName)){
+            player1.setText(myName);
+        }
+        if(!TextUtils.isEmpty(p2)){
+            player2.setText(friendName);
+        }
+        if(isSoundOn){
+            radioGroup_on_off.check(R.id.rbn_on);
+        }else {
+            radioGroup_on_off.check(R.id.rbn_off);
+        }
+
         if (rbtn_android.isChecked()) {
             player2.setText(R.string.android);
             player2.setEnabled(false);
             player2.setClickable(false);
         }
-        final RadioGroup radioGroup_on_off = view.findViewById(R.id.radio_group_on_off);
-        final RadioButton on = view.findViewById(R.id.rbn_on);
-        final RadioButton off = view.findViewById(R.id.rbn_off);
-        Button done = view.findViewById(R.id.btn_done);
+
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,25 +169,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 }
                 boolean IsSoundOn;
                 int radioButtonOnId = radioGroup_on_off.getCheckedRadioButtonId();
-                boolean checked =  on.isChecked();
                 if (radioButtonOnId == R.id.rbn_on) {
                     IsSoundOn = true;
-                    on.setChecked(true);
                 } else {
                     IsSoundOn = false;
                 }
-                if (p1.equals("")) {
-                    p1 = getString(R.string.you);
-                    if (rbtn_friend.isChecked()) {
-                        if (p2.equals("")) {
-                            p2 = getString(R.string.friend);
-                        }
-                    }
-                }
-                sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
                 editor = sharedPreferences.edit();
-                editor.putString(Constants.PLAYER1, p1);
-                editor.putString(Constants.PLAYER2, p2);
+                if(!TextUtils.isEmpty(p1)) {
+                    editor.putString(Constants.PLAYER1, p1);
+                }
+                if(!TextUtils.isEmpty(p2)) {
+                    editor.putString(Constants.PLAYER2, p2);
+                }
                 editor.putBoolean(Constants.IS_SOUNON, IsSoundOn);
                 editor.apply();
                 dialog.cancel();

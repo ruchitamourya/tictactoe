@@ -1,4 +1,4 @@
-package com.ruchita.tictactoe;
+package com.ruchita.tictactoe.view.screen;
 
 
 import android.content.Context;
@@ -25,6 +25,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.ruchi.tictactoe.R;
+import com.ruchita.tictactoe.AppUtil;
+import com.ruchita.tictactoe.Constants;
+import com.ruchita.tictactoe.view.adapter.GameGridAdapter;
+import com.ruchita.tictactoe.GameGridListener;
 import com.ruchita.tictactoe.firebase.DataUpdateListener;
 import com.ruchita.tictactoe.firebase.FireBaseHelper;
 import com.ruchita.tictactoe.firebase.GameData;

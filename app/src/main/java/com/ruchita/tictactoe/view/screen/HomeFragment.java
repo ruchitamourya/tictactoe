@@ -1,4 +1,4 @@
-package com.ruchita.tictactoe;
+package com.ruchita.tictactoe.view.screen;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -18,6 +18,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.example.ruchi.tictactoe.R;
+import com.ruchita.tictactoe.Constants;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 

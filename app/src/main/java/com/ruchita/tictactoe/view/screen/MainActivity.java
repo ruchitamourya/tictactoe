@@ -1,14 +1,14 @@
-package com.ruchita.tictactoe;
+package com.ruchita.tictactoe.view.screen;
 
-import android.databinding.DataBindingUtil;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
 import com.example.ruchi.tictactoe.R;
 import com.google.firebase.FirebaseApp;
+import com.ruchita.tictactoe.AppUtil;
 
 public class MainActivity extends AppCompatActivity{
 

@@ -26,7 +26,7 @@ public class GameGridAdapter extends RecyclerView.Adapter<GameGridAdapter.GameGr
     public GameGridViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.grid_item, parent, false);
-        CardView cardView = view.findViewById(R.id.grid_card_view);
+        View cardView = view.findViewById(R.id.grid_card_view);
         TextView textView = cardView.findViewById(R.id.text_view);
 
         final int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;

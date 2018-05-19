@@ -140,7 +140,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         player1 = view.findViewById(R.id.etxt_p1);
         player2 = view.findViewById(R.id.etxt_p2);
         if (rbtn_android.isChecked()) {
-            player2.setText("Android");
+            player2.setText(R.string.android);
             player2.setEnabled(false);
             player2.setClickable(false);
         }
@@ -165,10 +165,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     IsSoundOn = false;
                 }
                 if (p1.equals("")) {
-                    p1 = "You";
+                    p1 = getString(R.string.you);
                     if (rbtn_friend.isChecked()) {
                         if (p2.equals("")) {
-                            p2 = "Friend";
+                            p2 = getString(R.string.friend);
                         }
                     }
                 }
@@ -177,7 +177,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 editor.putString(Constants.PLAYER1, p1);
                 editor.putString(Constants.PLAYER2, p2);
                 editor.putBoolean(Constants.IS_SOUNON, IsSoundOn);
-                editor.putBoolean("checked",checked);
                 editor.apply();
                 dialog.cancel();
             }

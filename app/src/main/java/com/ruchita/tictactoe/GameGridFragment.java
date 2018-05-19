@@ -306,11 +306,13 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     }
 
     private void playAndroid(List<Integer> indexList) {
-        int[] anMove = getAndroidMove(indexList);
-        int index = ttt.length * anMove[0] + anMove[1];
-        View view = mLayoutManager.findViewByPosition(index);
-        View requiredTextView = view.findViewById(R.id.text_view);
-        onClick(requiredTextView, anMove[0], anMove[1]);
+        if(!hasGameFinished) {
+            int[] anMove = getAndroidMove(indexList);
+            int index = ttt.length * anMove[0] + anMove[1];
+            View view = mLayoutManager.findViewByPosition(index);
+            View requiredTextView = view.findViewById(R.id.text_view);
+            onClick(requiredTextView, anMove[0], anMove[1]);
+        }
     }
 
     private int[] getAndroidMove(List<Integer> indexList) {

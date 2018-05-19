@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity{
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
       //  toolbar.showOverflowMenu();
-        getSupportActionBar().setTitle("Tic Tac Toe ");
+        getSupportActionBar().setTitle(R.string.title);
         FirebaseApp.initializeApp(this);
         AppUtil.setmContext(this);
         // toolbar.setOnMenuItemClickListener(this);
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity{
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         HomeFragment fragment = HomeFragment.newInstance();
-        transaction.replace(R.id.fragment_container, fragment,"homeFragment");
+        transaction.replace(R.id.fragment_container, fragment,getString(R.string.homeFragment));
        // transaction.addToBackStack("homeFragment");
         transaction.commit();
     }

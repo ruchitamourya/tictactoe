@@ -1,4 +1,4 @@
-package com.example.ruchi.tictactoe.ViewModel;
+package com.ruchita.tictactoe.ViewModel;
 
 import android.util.Log;
 import android.view.View;

@@ -1,4 +1,4 @@
-package com.example.ruchi.tictactoe;
+package com.ruchita.tictactoe;
 
 import android.content.Context;
 import android.content.SharedPreferences;

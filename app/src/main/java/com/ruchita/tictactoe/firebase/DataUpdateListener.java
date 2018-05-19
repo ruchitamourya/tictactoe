@@ -1,4 +1,4 @@
-package com.example.ruchi.tictactoe.firebase;
+package com.ruchita.tictactoe.firebase;
 
 public interface DataUpdateListener {
     void onUpdateSuccess(String gameId);

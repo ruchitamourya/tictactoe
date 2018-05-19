@@ -1,4 +1,4 @@
-package com.example.ruchi.tictactoe;
+package com.ruchita.tictactoe;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import com.example.ruchi.tictactoe.R;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
@@ -142,9 +144,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             player2.setEnabled(false);
             player2.setClickable(false);
         }
-
+        final RadioGroup radioGroup_on_off = view.findViewById(R.id.radio_group_on_off);
         final RadioButton on = view.findViewById(R.id.rbn_on);
-        RadioButton off = view.findViewById(R.id.rbn_off);
+        final RadioButton off = view.findViewById(R.id.rbn_off);
         Button done = view.findViewById(R.id.btn_done);
         done.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,8 +156,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     p2 = player2.getText().toString();
                 }
                 boolean IsSoundOn;
-                if (on.isChecked()) {
+                int radioButtonOnId = radioGroup_on_off.getCheckedRadioButtonId();
+                boolean checked =  on.isChecked();
+                if (radioButtonOnId == R.id.rbn_on) {
                     IsSoundOn = true;
+                    on.setChecked(true);
                 } else {
                     IsSoundOn = false;
                 }
@@ -172,6 +177,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 editor.putString(Constants.PLAYER1, p1);
                 editor.putString(Constants.PLAYER2, p2);
                 editor.putBoolean(Constants.IS_SOUNON, IsSoundOn);
+                editor.putBoolean("checked",checked);
                 editor.apply();
                 dialog.cancel();
             }

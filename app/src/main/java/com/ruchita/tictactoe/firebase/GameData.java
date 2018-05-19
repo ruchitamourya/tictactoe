@@ -1,8 +1,8 @@
-package com.example.ruchi.tictactoe.firebase;
+package com.ruchita.tictactoe.firebase;
 
 import java.util.List;
 
-import static com.example.ruchi.tictactoe.Constants.GameStatus.CREATED;
+import static com.ruchita.tictactoe.Constants.GameStatus.CREATED;
 
 public class GameData {
     private String gameId;

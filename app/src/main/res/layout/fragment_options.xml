@@ -99,6 +99,7 @@
                 />
 
           <RadioGroup
+              android:id="@+id/radio_group_on_off"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:orientation="horizontal">
@@ -107,7 +108,6 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:text="On"
-                  android:checked="true"
                   android:textSize="20dp"
                   android:textColor="@android:color/white"
                   android:layout_marginLeft="20dp"/>

@@ -1,4 +1,4 @@
-package com.example.ruchi.tictactoe;
+package com.ruchita.tictactoe;
 
 import android.view.View;
 import android.widget.TextView;

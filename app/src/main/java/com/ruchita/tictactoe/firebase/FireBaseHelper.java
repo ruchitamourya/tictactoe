@@ -1,9 +1,9 @@
-package com.example.ruchi.tictactoe.firebase;
+package com.ruchita.tictactoe.firebase;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.ruchi.tictactoe.AppUtil;
+import com.ruchita.tictactoe.AppUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import static com.example.ruchi.tictactoe.AppUtil.get1DArray;
+import static com.ruchita.tictactoe.AppUtil.get1DArray;
 
 public class FireBaseHelper {
     private static String TAG = FireBaseHelper.class.getSimpleName();

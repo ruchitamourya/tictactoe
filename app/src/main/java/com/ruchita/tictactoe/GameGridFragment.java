@@ -1,4 +1,4 @@
-package com.example.ruchi.tictactoe;
+package com.ruchita.tictactoe;
 
 
 import android.content.Context;
@@ -24,9 +24,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.ruchi.tictactoe.firebase.DataUpdateListener;
-import com.example.ruchi.tictactoe.firebase.FireBaseHelper;
-import com.example.ruchi.tictactoe.firebase.GameData;
+import com.example.ruchi.tictactoe.R;
+import com.ruchita.tictactoe.firebase.DataUpdateListener;
+import com.ruchita.tictactoe.firebase.FireBaseHelper;
+import com.ruchita.tictactoe.firebase.GameData;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -213,7 +214,11 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
             tvMyName.setText(myName);
             tvFriendName.setText("Android");
         } else if (secondPlayerType == FRIEND) {
-            tvMyName.setText(myName);
+            if(myName.equals("")){
+                tvMyName.setText("Friend");
+            }else {
+                tvMyName.setText(myName);
+            }
             tvFriendName.setText(friendName);
         } else {
             mainContainer.setVisibility(View.GONE);

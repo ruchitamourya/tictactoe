@@ -1,4 +1,4 @@
-package com.example.ruchi.tictactoe;
+package com.ruchita.tictactoe;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.ruchi.tictactoe.R;
 
 public class GameGridAdapter extends RecyclerView.Adapter<GameGridAdapter.GameGridViewHolder> {
 

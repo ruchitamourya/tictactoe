@@ -23,7 +23,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class MultiplayerFragmet extends Fragment implements View.OnClickListener{
+public class MultiplayerFragmet extends Fragment implements View.OnClickListener {
     private static String TAG = MultiplayerFragmet.class.getSimpleName();
     private Button joinBtn;
     private Button hostBtn;
@@ -48,13 +48,13 @@ public class MultiplayerFragmet extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if(id == R.id.btn_host_game){
+        if (id == R.id.btn_host_game) {
             String gameId = FireBaseHelper.getInstance().createNewGame("Ruchita", new int[3][3]);
             codeText.setText(gameId);
-        }else if(id == R.id.btn_join_game){
+        } else if (id == R.id.btn_join_game) {
             String code = codeText.getText().toString();
             setUpTheGame(code);
-        }else if(id == R.id.btn_start_game){
+        } else if (id == R.id.btn_start_game) {
             String code = codeText.getText().toString();
             openGridFragment(code);
         }

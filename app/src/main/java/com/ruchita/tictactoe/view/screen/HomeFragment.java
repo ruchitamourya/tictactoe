@@ -28,9 +28,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private Button rtn_options;
     private RadioButton rbtn_android;
     private RadioButton rbtn_friend;
-    private RadioButton radioButton3;
-    private RadioButton radioButton4;
-    private RadioButton radioButton5;
     private SharedPreferences.Editor editor;
     private EditText player1;
     private EditText player2;
@@ -38,7 +35,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private String p2 = "";
     private RadioGroup radioGroupPlayer;
     private RadioGroup radioGroupSize;
-
 
     public static HomeFragment newInstance() {
         Bundle bundle = new Bundle();
@@ -63,9 +59,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         rtn_options = view1.findViewById(R.id.btn_ops);
         rbtn_android = view1.findViewById(R.id.rb_android);
         rbtn_friend = view1.findViewById(R.id.rb_friend);
-        radioButton3 = view1.findViewById(R.id.rbn_3);
-        radioButton4 = view1.findViewById(R.id.rbn_4);
-        radioButton5 = view1.findViewById(R.id.rbn_5);
         btn_rate = view1.findViewById(R.id.btn_rate);
         radioGroupPlayer = view1.findViewById(R.id.radio_group_player);
         radioGroupSize = view1.findViewById(R.id.radio_group_size);
@@ -122,7 +115,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             secondPlayerType = GameGridFragment.FRIEND;
         }
         Fragment fragment = GameGridFragment.newInstance(gridSize, secondPlayerType);
-        transaction.replace(R.id.fragment_container, fragment,GameGridFragment.class.getSimpleName());
+        transaction.replace(R.id.fragment_container, fragment, GameGridFragment.class.getSimpleName());
         transaction.addToBackStack(GameGridFragment.class.getSimpleName());
         transaction.commit();
     }
@@ -150,15 +143,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         String myName = sharedPreferences.getString(Constants.PLAYER1, "");
         String friendName = sharedPreferences.getString(Constants.PLAYER2, "");
         boolean isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNDON, true);
-        if(!TextUtils.isEmpty(myName)){
+        if (!TextUtils.isEmpty(myName)) {
             player1.setText(myName);
         }
-        if(!TextUtils.isEmpty(p2)){
+        if (!TextUtils.isEmpty(p2)) {
             player2.setText(friendName);
         }
-        if(isSoundOn){
+        if (isSoundOn) {
             radioGroup_on_off.check(R.id.rbn_on);
-        }else {
+        } else {
             radioGroup_on_off.check(R.id.rbn_off);
         }
 
@@ -184,10 +177,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 }
                 SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
                 editor = sharedPreferences.edit();
-                if(!TextUtils.isEmpty(p1)) {
+                if (!TextUtils.isEmpty(p1)) {
                     editor.putString(Constants.PLAYER1, p1);
                 }
-                if(!TextUtils.isEmpty(p2)) {
+                if (!TextUtils.isEmpty(p2)) {
                     editor.putString(Constants.PLAYER2, p2);
                 }
                 editor.putBoolean(Constants.IS_SOUNDON, IsSoundOn);

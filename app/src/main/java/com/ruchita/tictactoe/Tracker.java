@@ -16,11 +16,11 @@ public class Tracker {
         Tracker.mFirebaseAnalytics = mFirebaseAnalytics;
     }
 
-    public static void trackScreenView(Activity activity, Fragment screen){
+    public static void trackScreenView(Activity activity, Fragment screen) {
         mFirebaseAnalytics.setCurrentScreen(activity, screen.getClass().getSimpleName(), null /* class override */);
     }
 
-    public static void trackGameStart(int gameType, boolean soundOn, int secPlayerType){
+    public static void trackGameStart(int gameType, boolean soundOn, int secPlayerType) {
         Bundle params = new Bundle();
         params.putInt(Params.GAME_TYPE, gameType);
         params.putBoolean(Params.SOUND_ON, soundOn);
@@ -28,7 +28,7 @@ public class Tracker {
         mFirebaseAnalytics.logEvent(Events.GAME_START, params);
     }
 
-    public static void trackGameEnd(int gameType, boolean soundOn, int secPlayerType, int winner){
+    public static void trackGameEnd(int gameType, boolean soundOn, int secPlayerType, int winner) {
         Bundle params = new Bundle();
         params.putInt(Params.GAME_TYPE, gameType);
         params.putBoolean(Params.SOUND_ON, soundOn);

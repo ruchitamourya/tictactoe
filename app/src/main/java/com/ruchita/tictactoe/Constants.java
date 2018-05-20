@@ -9,7 +9,7 @@ public class Constants {
 
     public static final String APP_ID_KEY = "app_id_key";
 
-    public static class GameStatus{
+    public static class GameStatus {
         public static final String CREATED = "created";
         public static final String RUNNING = "running";
         public static final String FINISHED = "finished";
@@ -17,15 +17,15 @@ public class Constants {
 
     }
 
-    public static class Analytics{
-        public static class Events{
+    public static class Analytics {
+        public static class Events {
             public static final String GAME_START = "game_start";
-            public static final String GAME_COMPLETED ="game_finished";
-
+            public static final String GAME_COMPLETED = "game_finished";
 
 
         }
-        public static class Params{
+
+        public static class Params {
             public static final String GAME_TYPE = "game_type";
             public static final String SECOND_PLAYER_TYPE = "second_player_type";
             public static final String SOUND_ON = "sound_on";

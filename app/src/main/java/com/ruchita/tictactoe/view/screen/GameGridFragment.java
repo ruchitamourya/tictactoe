@@ -203,7 +203,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
         String myName = sharedPreferences.getString(Constants.PLAYER1, getString(R.string.you));
         String friendName = sharedPreferences.getString(Constants.PLAYER2, getString(R.string.friend));
-        isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNON, false);
+        isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNDON, false);
         initNameView(view, myName, friendName);
         size = getArguments().getInt(GRID_SIZE);
         ttt = new int[size][size];
@@ -565,6 +565,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         FragmentTransaction transaction = manager.beginTransaction();
         GameGridFragment fragment = GameGridFragment.newInstance(size, secondPlayerType);
         transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 
@@ -584,4 +585,6 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         gameData = data;
         updateGame(data, false);
     }
+
+
 }

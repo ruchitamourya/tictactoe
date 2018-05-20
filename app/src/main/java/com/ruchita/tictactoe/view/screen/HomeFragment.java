@@ -122,8 +122,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             secondPlayerType = GameGridFragment.FRIEND;
         }
         Fragment fragment = GameGridFragment.newInstance(gridSize, secondPlayerType);
-        transaction.replace(R.id.fragment_container, fragment,"GameGridFragment");
-        transaction.addToBackStack("GameGridFragment");
+        transaction.replace(R.id.fragment_container, fragment,GameGridFragment.class.getSimpleName());
+        transaction.addToBackStack(GameGridFragment.class.getSimpleName());
         transaction.commit();
     }
 

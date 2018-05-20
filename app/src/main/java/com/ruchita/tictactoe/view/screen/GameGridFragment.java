@@ -286,7 +286,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
 
     private void makeSound() {
         if (isSoundOn) {
-            final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.button_click1);
+            final MediaPlayer mp = MediaPlayer.create(getContext(), R.raw.sound);
             mp.start();
         }
     }

@@ -1,4 +1,4 @@
-package com.ruchita.tictactoe;
+package com.ruchita.tictactoe.view.screen;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.ruchi.tictactoe.R;
+import com.ruchita.tictactoe.R;
+import com.ruchita.tictactoe.AppUtil;
+import com.ruchita.tictactoe.Constants;
 import com.ruchita.tictactoe.firebase.FireBaseHelper;
 import com.ruchita.tictactoe.firebase.GameData;
 import com.google.android.gms.tasks.OnFailureListener;

@@ -114,8 +114,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             secondPlayerType = GameGridFragment.FRIEND;
         }
         Fragment fragment = GameGridFragment.newInstance(gridSize, secondPlayerType);
-        transaction.replace(R.id.fragment_container, fragment, fragment.getClass().getSimpleName());
-        transaction.addToBackStack(fragment.getClass().getSimpleName());
+        transaction.replace(R.id.fragment_container, fragment,"GameGridFragment");
+        transaction.addToBackStack("GameGridFragment");
         transaction.commit();
     }
 
@@ -141,7 +141,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Constants.SHARE_PRE_KEY, Context.MODE_PRIVATE);
         String myName = sharedPreferences.getString(Constants.PLAYER1, "");
         String friendName = sharedPreferences.getString(Constants.PLAYER2, "");
-        boolean isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNON, true);
+        boolean isSoundOn = sharedPreferences.getBoolean(Constants.IS_SOUNDON, true);
         if(!TextUtils.isEmpty(myName)){
             player1.setText(myName);
         }
@@ -182,7 +182,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 if(!TextUtils.isEmpty(p2)) {
                     editor.putString(Constants.PLAYER2, p2);
                 }
-                editor.putBoolean(Constants.IS_SOUNON, IsSoundOn);
+                editor.putBoolean(Constants.IS_SOUNDON, IsSoundOn);
                 editor.apply();
                 dialog.cancel();
             }

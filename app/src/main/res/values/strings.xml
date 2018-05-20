@@ -17,4 +17,6 @@
     <string name="title">Tic Tac Toe</string>
     <string name="homeFragment">homeFragment</string>
     <string name="you">You</string>
+    <string name="string0">O</string>
+    <string name="stringX">X</string>
 </resources>

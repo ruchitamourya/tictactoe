@@ -427,42 +427,6 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         return won;
     }
 
-    private boolean checkAllDiagonal(int row, int col, List<Integer> indexList) {
-        boolean won = true;
-        if ((row == col)) {
-            for (int i = 0; i < ttt[0].length; i++) {
-                won = won && ttt[row][col] == ttt[i][i];
-                indexList = storeIndex(indexList, i, i);
-            }
-            return won;
-        } else if (row + col == (ttt.length - 1)) {
-            for (int i = 0; i < ttt[0].length; i++) {
-                won = won && ttt[row][col] == ttt[i][ttt.length - 1 - i];
-                indexList = storeIndex(indexList, i, ttt.length - 1 - i);
-            }
-            return won;
-        }
-        return false;
-    }
-
-    private boolean checkColumn(int row, int col, List<Integer> indexList) {
-        boolean won = true;
-        for (int i = 0; i < ttt[col].length; i++) {
-            won = won && ttt[i][col] == ttt[row][col];
-            indexList = storeIndex(indexList, i, col);
-        }
-        return won;
-    }
-
-    private boolean checkRow(int row, int col, List<Integer> indexList) {
-        boolean won = true;
-        for (int i = 0; i < ttt[row].length; i++) {
-            won = won && ttt[row][i] == ttt[row][col];
-            indexList = storeIndex(indexList, row, i);
-        }
-        return won;
-    }
-
     private boolean checkVertical(int row, int col, List<Integer> indexList) {
         int count = 0;
         int i = row - 1;

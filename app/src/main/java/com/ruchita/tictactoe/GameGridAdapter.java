@@ -76,9 +76,9 @@ public class GameGridAdapter extends RecyclerView.Adapter<GameGridAdapter.GameGr
             this.row = row;
             this.col = col;
             if (value == 1) {
-                textView.setText("O");
+                textView.setText(R.string.string0);
             } else if (value == 2) {
-                textView.setText("X");
+                textView.setText(R.string.stringX);
             }
         }
 

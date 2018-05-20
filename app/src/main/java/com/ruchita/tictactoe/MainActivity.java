@@ -41,10 +41,8 @@ public class MainActivity extends AppCompatActivity{
         FragmentTransaction transaction = manager.beginTransaction();
         HomeFragment fragment = HomeFragment.newInstance();
         transaction.replace(R.id.fragment_container, fragment,getString(R.string.homeFragment));
-       // transaction.addToBackStack("homeFragment");
         transaction.commit();
     }
-
 
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {

@@ -24,18 +24,19 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.ruchi.tictactoe.R;
-import com.ruchita.tictactoe.AppUtil;
-import com.ruchita.tictactoe.Constants;
-import com.ruchita.tictactoe.view.adapter.GameGridAdapter;
-import com.ruchita.tictactoe.GameGridListener;
-import com.ruchita.tictactoe.firebase.DataUpdateListener;
-import com.ruchita.tictactoe.firebase.FireBaseHelper;
-import com.ruchita.tictactoe.firebase.GameData;
+import com.ruchita.tictactoe.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.ruchita.tictactoe.AppUtil;
+import com.ruchita.tictactoe.Constants;
+import com.ruchita.tictactoe.GameGridListener;
+import com.ruchita.tictactoe.Tracker;
+import com.ruchita.tictactoe.firebase.DataUpdateListener;
+import com.ruchita.tictactoe.firebase.FireBaseHelper;
+import com.ruchita.tictactoe.firebase.GameData;
+import com.ruchita.tictactoe.view.adapter.GameGridAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +109,14 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         if (this.secondPlayerType != ONLINE_FRIEND) {
             amIPlayer1 = true;
         }
+
         FireBaseHelper.getInstance().setDataUpdateListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        Tracker.trackScreenView(getActivity(), this);
+        super.onResume();
     }
 
     private void getTheGameFromFireBase() {
@@ -207,6 +215,8 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                 onRestartBtnClick();
             }
         });
+
+        Tracker.trackGameStart(size, isSoundOn, secondPlayerType);
         return view;
     }
 
@@ -583,6 +593,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
             gameData.setGameStatus(Constants.GameStatus.FINISHED);
             FireBaseHelper.getInstance().updateGameDataAsync(gameData);
         }
+        Tracker.trackGameEnd(size, isSoundOn, secondPlayerType, winner);
     }
 
     private void onRestartBtnClick() {

@@ -16,4 +16,21 @@ public class Constants {
         public static final String PLAYER_2_JOINED = "player_2_joined";
 
     }
+
+    public static class Analytics{
+        public static class Events{
+            public static final String GAME_START = "game_start";
+            public static final String GAME_COMPLETED ="game_finished";
+
+
+
+        }
+        public static class Params{
+            public static final String GAME_TYPE = "game_type";
+            public static final String SECOND_PLAYER_TYPE = "second_player_type";
+            public static final String SOUND_ON = "sound_on";
+            public static final String WINNER = "winner";
+        }
+
+    }
 }

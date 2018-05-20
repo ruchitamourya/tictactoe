@@ -17,8 +17,9 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.example.ruchi.tictactoe.R;
+import com.ruchita.tictactoe.R;
 import com.ruchita.tictactoe.Constants;
+import com.ruchita.tictactoe.Tracker;
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
 
@@ -48,6 +49,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        Tracker.trackScreenView(getActivity(), this);
+        super.onResume();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

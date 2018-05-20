@@ -6,9 +6,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.example.ruchi.tictactoe.R;
+import com.ruchita.tictactoe.R;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ruchita.tictactoe.AppUtil;
+import com.ruchita.tictactoe.Tracker;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -17,8 +19,8 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Tracker.setFirebaseAnalytics(FirebaseAnalytics.getInstance(this.getApplicationContext()));
         setContentView(R.layout.activity_main);
-
         openHomeFragment();
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

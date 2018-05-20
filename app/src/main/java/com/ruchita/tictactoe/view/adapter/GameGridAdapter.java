@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.ruchi.tictactoe.R;
+import com.ruchita.tictactoe.R;
 import com.ruchita.tictactoe.GameGridListener;
 
 public class GameGridAdapter extends RecyclerView.Adapter<GameGridAdapter.GameGridViewHolder> {

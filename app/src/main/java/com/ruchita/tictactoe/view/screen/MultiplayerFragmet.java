@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.ruchi.tictactoe.R;
+import com.ruchita.tictactoe.R;
 import com.ruchita.tictactoe.AppUtil;
 import com.ruchita.tictactoe.Constants;
 import com.ruchita.tictactoe.firebase.FireBaseHelper;

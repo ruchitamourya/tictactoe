@@ -8,7 +8,7 @@
     <string name="has_won">has won !!!</string>
     <string name="start">start</string>
     <string name="rate_it">Rate it !</string>
-    <dimen name="text_size">55sp</dimen>
+    <!--<dimen name="text_size">55sp</dimen>-->
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

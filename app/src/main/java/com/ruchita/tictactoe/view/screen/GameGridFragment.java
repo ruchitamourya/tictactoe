@@ -1,9 +1,11 @@
 package com.ruchita.tictactoe.view.screen;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -52,7 +56,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     private CardView cardView1;
     private CardView cardView_btn;
     private LinearLayout linearLayout;
-    private TextView text_won;
+    // private TextView text_won;
     private Button restart;
     private RelativeLayout mainContainer;
     private ProgressBar progressBar;
@@ -171,13 +175,13 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                     hasGameFinished = true;
                     switch (gameData.getWinner()) {
                         case 1:
-                            winningPlayer(1);
+                            // winningPlayer(1);
                             break;
                         case 2:
-                            winningPlayer(2);
+                            // winningPlayer(2);
                             break;
                         case 3:
-                            winningPlayer(3);
+                            // winningPlayer(3);
                             break;
                     }
                 } else {
@@ -194,8 +198,8 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         View view = inflater.inflate(R.layout.fragment_game_grid, container, false);
         cardView1 = view.findViewById(R.id.card_vw2);
         linearLayout = view.findViewById(R.id.pl_ll);
-        text_won = view.findViewById(R.id.pl_won);
-        restart = view.findViewById(R.id.btn_restart);
+//        text_won = view.findViewById(R.id.pl_won);
+//        restart = view.findViewById(R.id.btn_restart);
         cardView_btn = view.findViewById(R.id.card_v_btn);
         progressBar = view.findViewById(R.id.progress_bar);
         mainContainer = view.findViewById(R.id.rl_main_container);
@@ -209,12 +213,12 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         ttt = new int[size][size];
         setUpRecyclerView(view, ttt);
 
-        restart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onRestartBtnClick();
-            }
-        });
+//        restart.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onRestartBtnClick();
+//            }
+//        });
 
         Tracker.trackGameStart(size, isSoundOn, secondPlayerType);
         return view;
@@ -365,17 +369,21 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         if (hasWon) {
             hasGameFinished = true;
             if (isPlayer1Turn) {
-                winningPlayer(2);
+                //winningPlayer(2);
+                displayWinner(2);
             } else {
-                winningPlayer(1);
+                // winningPlayer(1);
+                displayWinner(1);
             }
         } else {
             count++;
             if (count == ttt[0].length * ttt[1].length) {
-                winningPlayer(3);
+                // winningPlayer(3);
                 hasGameFinished = true;
+                displayWinner(3);
             }
         }
+
     }
 
     private void setGridText(TextView textView, int row, int col) {
@@ -532,7 +540,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         return indexList;
     }
 
-    private void winningPlayer(int winner) {
+    private void winningPlayer(int winner, TextView text_won) {
         String text = "";
         TextView winnerTextView;
         if (winner == 1) {
@@ -546,12 +554,12 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         } else if (winner == 3) {
             text = getResources().getString(R.string.tie);
         }
-        linearLayout.setVisibility(View.GONE);
-        cardView1.setVisibility(View.VISIBLE);
+        // linearLayout.setVisibility(View.GONE);
+        // cardView1.setVisibility(View.VISIBLE);
         text_won.setBackgroundColor(Color.GREEN);
         text_won.setText(text);
-        cardView_btn.setVisibility(View.VISIBLE);
-        restart.setVisibility(View.VISIBLE);
+        // cardView_btn.setVisibility(View.VISIBLE);
+        //  restart.setVisibility(View.VISIBLE);
         if (secondPlayerType == ONLINE_FRIEND) {
             gameData.setWinner(winner);
             gameData.setGameStatus(Constants.GameStatus.FINISHED);
@@ -584,5 +592,49 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
         Log.d(TAG, "onUpdateReceived " + data);
         gameData = data;
         updateGame(data, false);
+    }
+
+    private void displayWinner(final int winner) {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//        View view = getActivity().getLayoutInflater().inflate(R.layout.display_winner, null);
+//        builder.setView(view);
+//        builder.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+//        final Dialog dialog = builder.create();
+//        dialog.show();
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int delay = random.nextInt(5);
+                    Log.d("DELAY1", delay + "");
+                    Thread.sleep((delay + 1) * 20000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        GameGridFragment.this.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                final Dialog dialog = new Dialog(getContext(), R.style.Theme_Dialog);
+                View view = getActivity().getLayoutInflater().inflate(R.layout.display_winner, null);
+                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                Button restart = view.findViewById(R.id.btn_restart);
+                TextView text_won = view.findViewById(R.id.pl_won);
+                dialog.setContentView(view);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                winningPlayer(winner, text_won);
+                restart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onRestartBtnClick();
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+            }
+        });
+        thread.start();
     }
 }

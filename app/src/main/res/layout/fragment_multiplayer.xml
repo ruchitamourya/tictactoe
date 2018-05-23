@@ -1,31 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-    <Button
-        android:id="@+id/btn_host_game"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="@string/host_game"/>
-    <Button
-        android:id="@+id/btn_join_game"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_host_game"
-        android:layout_centerHorizontal="true"
-        android:text="@string/join_game"/>
-    <EditText
-        android:id="@+id/et_code"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/g4">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_join_game"
-        android:layout_centerHorizontal="true"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/image_text"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/tictactoe_img" />
+
+        <Button
+            android:id="@+id/btn_host_game"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image_text"
+            android:layout_centerHorizontal="true"
+            android:background="@color/colorAccent"
+            android:text="@string/host_game"
+            android:textSize="@dimen/btn_text_size"/>
+
+        <Button
+            android:id="@+id/btn_join_game"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_host_game"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
+            android:background="@color/colorAccent"
+            android:text="@string/join_game"
+            android:textSize="@dimen/btn_text_size"/>
         />
-    <Button
-        android:id="@+id/btn_start_game"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/et_code"
-        android:layout_centerHorizontal="true"
-        android:text="@string/start_game"/>
+        <Button
+            android:id="@+id/btn_start_game"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/btn_join_game"            android:layout_centerHorizontal="true"
+            android:background="@color/colorAccent"
+            android:text="@string/start_game"
+            android:textSize="@dimen/btn_text_size"/>
+
+        <EditText
+            android:id="@+id/et_code"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_start_game"
+            android:layout_centerHorizontal="true"
+            android:hint="enter code" />
+
+
+    </RelativeLayout>
 </RelativeLayout>

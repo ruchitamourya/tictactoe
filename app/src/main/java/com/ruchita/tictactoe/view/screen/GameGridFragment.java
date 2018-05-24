@@ -13,7 +13,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,14 +20,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ruchita.tictactoe.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -36,6 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.ruchita.tictactoe.AppUtil;
 import com.ruchita.tictactoe.Constants;
 import com.ruchita.tictactoe.GameGridListener;
+import com.ruchita.tictactoe.R;
 import com.ruchita.tictactoe.Tracker;
 import com.ruchita.tictactoe.firebase.DataUpdateListener;
 import com.ruchita.tictactoe.firebase.FireBaseHelper;
@@ -619,10 +617,10 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
             public void run() {
                 final Dialog dialog = new Dialog(getContext(), R.style.Theme_Dialog);
                 View view = getActivity().getLayoutInflater().inflate(R.layout.display_winner, null);
-                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 Button restart = view.findViewById(R.id.btn_restart);
                 TextView text_won = view.findViewById(R.id.pl_won);
                 dialog.setContentView(view);
+                dialog.getWindow().setLayout(mLayoutManager.getWidth(), mLayoutManager.getHeight());
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 winningPlayer(winner, text_won);
                 restart.setOnClickListener(new View.OnClickListener() {
@@ -633,6 +631,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                     }
                 });
                 dialog.show();
+
             }
         });
         thread.start();

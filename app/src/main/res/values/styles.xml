@@ -8,9 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="Theme_Dialog" parent="android:Theme.Holo.Dialog">
-        <item name="android:windowMinWidthMajor">100%</item>
-        <item name="android:windowMinWidthMinor">100%</item>
+    <style name="Theme_Dialog" parent="android:Theme.Holo.Dialog.NoActionBar">
+        <!--<item name="android:windowMinWidthMajor">100%</item>-->
+        <!--<item name="android:windowMinWidthMinor">65%</item>-->
+
+        <!--<item name="windowFixedWidthMajor">600dp</item>-->
+        <!--<item name="windowFixedWidthMinor">600dp</item>-->
+        <!--<item name="windowFixedHeightMajor">600dp</item>-->
+        <!--<item name="windowFixedHeightMinor">600dp</item>-->
     </style>
 
 </resources>

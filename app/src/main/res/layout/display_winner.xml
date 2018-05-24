@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<<<<<<< HEAD
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="400dp"
@@ -6,6 +7,13 @@
     android:padding="10dp"
     android:background="#26000000"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+=======
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#60000000">
+>>>>>>> 4c6f2c89743e8a73e7c0ac4016c0ec7e2a6d69b5
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_vw2"
@@ -15,18 +23,19 @@
         android:visibility="visible"
         app:cardCornerRadius="3dp"
         app:cardElevation="5dp"
+        android:layout_centerInParent="true"
         app:cardUseCompatPadding="true">
 
         <TextView
             android:id="@+id/pl_won"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You has won !!!"
             android:padding="5dp"
             android:paddingEnd="8dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingStart="8dp"
+            android:text="You has won !!!"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
     </android.support.v7.widget.CardView>
@@ -39,6 +48,8 @@
         android:visibility="visible"
         app:cardCornerRadius="3dp"
         app:cardElevation="5dp"
+        android:layout_below="@+id/card_vw2"
+        android:layout_centerInParent="true"
         app:cardUseCompatPadding="true">
 
         <Button
@@ -54,4 +65,4 @@
             android:textSize="18sp" />
 
     </android.support.v7.widget.CardView>
-    </LinearLayout>
+</RelativeLayout>

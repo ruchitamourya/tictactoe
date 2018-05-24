@@ -18,8 +18,9 @@
             android:id="@+id/image_text"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/tictactoe_img" />
+            android:src="@drawable/crop_tic_tac_toe" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_View"

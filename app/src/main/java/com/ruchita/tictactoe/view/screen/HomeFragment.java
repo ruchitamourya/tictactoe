@@ -2,7 +2,9 @@ package com.ruchita.tictactoe.view.screen;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -83,9 +85,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 openOptionsDialog();
                 break;
             case R.id.btn_rate:
+                openGooglePlayStore();
                 break;
         }
 
+    }
+
+    private void openGooglePlayStore() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/" +
+                "store/apps/details?id=com.ruchita.tictactoe"));
+        startActivity(browserIntent);
     }
 
     private int getGridSize() {

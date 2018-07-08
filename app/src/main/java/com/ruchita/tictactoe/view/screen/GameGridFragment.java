@@ -17,9 +17,11 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -73,6 +75,7 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     private GameData gameData;
     private int secondPlayerType = 0;
     private boolean amIPlayer1 = false;
+    private RecyclerView mRecyclerView;
 
 
     public GameGridFragment() {
@@ -252,11 +255,11 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
     }
 
     private void setUpRecyclerView(View view, int ttt[][]) {
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_View);
+        mRecyclerView = view.findViewById(R.id.recycler_View);
         mLayoutManager = new GridLayoutManager(getContext(), size);
-        recyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         adapter = new GameGridAdapter(getContext(), ttt, this);
-        recyclerView.setAdapter(adapter);
+        mRecyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -621,8 +624,14 @@ public class GameGridFragment extends Fragment implements GameGridListener, Data
                 TextView text_won = view.findViewById(R.id.pl_won);
                 dialog.setContentView(view);
                 dialog.getWindow().setLayout(mLayoutManager.getWidth(), mLayoutManager.getHeight());
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                int loc[] = new int[2];
+                mRecyclerView.getLocationInWindow(loc);
                 winningPlayer(winner, text_won);
+                WindowManager.LayoutParams wmlp = dialog.getWindow().getAttributes();
+                wmlp.gravity = Gravity.TOP | Gravity.START;
+                wmlp.x = loc[0];   //x position
+                wmlp.y = loc[1];   //y position
                 restart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
